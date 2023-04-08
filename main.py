@@ -1,7 +1,9 @@
 import os
 import telebot
+from telebot import types
+import CoseSegrete
 
-API_TOKEN = token
+API_TOKEN = CoseSegrete.TOKEN
 
 bot = telebot.TeleBot(API_TOKEN)
 
