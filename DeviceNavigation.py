@@ -13,8 +13,9 @@ def backHome():
 def getUsbDevices():
     output_stream = os.popen("lsblk")
     usbDevices = parseLsblkOutput(output_stream.readlines())
+    usbDevices = [device for device in usbDevices if len(device["MOUNTPOINT"])>0]
     displayOutputSring = "Dispositivi collegati:\n"
-    displayOutputSring += "\n".join([str(x) + " - " + deviceInfoToString(i) for x , i in enumerate([device for device in usbDevices if len(device["MOUNTPOINT"])>0],1)])
+    displayOutputSring += "\n".join([str(x) + " - " + deviceInfoToString(i) for x , i in enumerate(usbDevices, 1)])
     displayOutputSring += "\nN.B. Partizioni diverse di uno stesso disco sono considerate come dischi diversi"
     #displayOutputSring = "\n".join([str(x) + " - " + i for x , i in enumerate(usbDevices,1)])
     print(displayOutputSring)
@@ -39,11 +40,11 @@ def deviceInfoToString(deviceInfo):
     return deviceInfo["NAME"] + " con uno spazio totale di memoria di " + deviceInfo["SIZE"]
 
 def deviceSelection(usbDevices,selection):
-    deviceInfo = usbDevices[selection-1]
+    deviceInfo = usbDevices[selection]
     os.chdir(deviceInfo["MOUNTPOINT"])
     cartelle, file = list(os.walk(deviceInfo["MOUNTPOINT"]))[0][1:]
     media = [x for x in file if isMedia(x)]
-    displayMedia(media)
+    return displayMedia(media), media
     print("Digita il nome del file che vuoi riprodurre, o forse vuoi esplorare le altre cartelle?")
     sceltaMedia(media)
 
@@ -55,6 +56,7 @@ def displayMedia(media):
     displayOutputSring = "Media presenti:\n"
     displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(media,1)])
     print(displayOutputSring)
+    return displayOutputSring
 
 def sceltaMedia(media):
     scelta = input()

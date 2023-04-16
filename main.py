@@ -112,7 +112,7 @@ def dispositivi(message):
         bot.send_message( 
             message.chat.id,
             devicesText, 
-            reply_markup=markup
+            reply_markup=types.ReplyKeyboardRemove()
             )
     
 @bot.message_handler(commands=['selezionaDispositivo'])
@@ -142,15 +142,31 @@ def dispositivi(message):
     bot.register_next_step_handler(msg, getDeviceSelection)
     
 def getDeviceSelection(message):
+    markup=types.ReplyKeyboardRemove()
     selection = -1
     devices = DeviceNavigation.getUsbDevices()[0]
     for i in range(len(devices)):
         if message.text == devices[i]["NAME"]:
             selection = i
             break
-    DeviceNavigation.deviceSelection(devices,selection)
+    mediaText, mediaList = DeviceNavigation.deviceSelection(devices,selection)
+    if len(mediaList) == 0:
+        bot.send_message(
+            message.chat.id,
+            "Non ci sono media qui",
+            reply_markup=markup
+            )
+    else:
+        for file in media:
+            markup.add(file)
+        msg = bot.send_message(
+            message.chat.id,
+            mediaText,
+            reply_markup=markup
+            )
+    
+        #bot.register_next_step_handler(msg, getDeviceSelection)
 
-    return "stocazzo"
 
 
 
