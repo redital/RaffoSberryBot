@@ -184,7 +184,7 @@ def esplora(message):
                 "Nessuna cartella presente.\nTorno indietro",
                 reply_markup=markup
                 )
-            goBack()
+            goBack(message)
         else :
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             for cartella in cartelleList:
