@@ -160,7 +160,7 @@ def getDeviceSelection(message):
         bot.register_next_step_handler(msg, esplora)
     else:
         markup.add("Esplora")
-        for file in media:
+        for file in mediaList:
             markup.add(file)
         msg = bot.send_message(
             message.chat.id,
