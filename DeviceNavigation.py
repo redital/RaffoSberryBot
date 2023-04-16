@@ -64,6 +64,9 @@ def displayMedia(media):
 
 def sceltaMedia(media,scelta):
     #scelta = input()
+    print(scelta)
+    print(scelta in media)
+    
     if scelta == "Esplora":
         esplora()
     elif scelta in media or scelta in [x.split(".")[0] for x in media]:
