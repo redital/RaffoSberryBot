@@ -264,7 +264,6 @@ def torna(message):
                 "In questo dispositivo non ci sono cartelle nè media.\nOperazione annullata",
                 reply_markup=markup
                 )
-            return
         else:
             bot.send_message(
                 message.chat.id,
@@ -272,6 +271,7 @@ def torna(message):
                 reply_markup=markup
                 )
             inCartella(message)
+        return
 
     if message.text == "Torna" :
         os.chdir(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
