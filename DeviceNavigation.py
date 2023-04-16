@@ -42,8 +42,7 @@ def deviceInfoToString(deviceInfo):
 def deviceSelection(usbDevices,selection):
     deviceInfo = usbDevices[selection]
     os.chdir(deviceInfo["MOUNTPOINT"])
-    media = getMedia()
-    return displayMedia(media), media
+    return displayMedia()
     print("Digita il nome del file che vuoi riprodurre, o forse vuoi esplorare le altre cartelle?")
     sceltaMedia(media)
 
@@ -56,11 +55,12 @@ def isMedia(file):
     permessi=["mp4","mp3","mkv"]
     return file.split(".")[-1] in permessi
 
-def displayMedia(media):
+def displayMedia():
+    media = getMedia()
     displayOutputSring = "Media presenti:\n"
     displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(media,1)])
     print(displayOutputSring)
-    return displayOutputSring
+    return displayOutputSring, media
 
 def sceltaMedia(media,scelta):
     #scelta = input()
@@ -77,4 +77,8 @@ def sceltaMedia(media,scelta):
         #sceltaMedia(media)
 
 def esplora():
-    pass
+    cartelle, file = list(os.walk(os.getcwd()))[0][1:]
+    displayOutputSring = "Cartelle presenti:\n"
+    displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(cartelle,1)])
+    print(displayOutputSring)
+    return displayOutputSring, cartelle

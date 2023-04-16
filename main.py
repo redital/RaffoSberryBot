@@ -2,6 +2,7 @@ import telebot
 from telebot import types
 import CoseSegrete
 import DeviceNavigation
+import os
 
 API_TOKEN = CoseSegrete.TOKEN
 
@@ -142,14 +143,18 @@ def dispositivi(message):
     bot.register_next_step_handler(msg, getDeviceSelection)
     
 def getDeviceSelection(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     selection = -1
     devices = DeviceNavigation.getUsbDevices()[0]
     for i in range(len(devices)):
         if message.text == devices[i]["NAME"]:
             selection = i
             break
-    mediaText, mediaList = DeviceNavigation.deviceSelection(devices,selection)
+    DeviceNavigation.deviceSelection(devices,selection)
+    inCartella(message)
+    
+def inCartella(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    mediaText, mediaList = DeviceNavigation.displayMedia()
     if len(mediaList) == 0:
         markup.add("Esplora","Annulla")
         msg = bot.send_message(
@@ -159,7 +164,7 @@ def getDeviceSelection(message):
             )
         bot.register_next_step_handler(msg, esplora)
     else:
-        markup.add("Esplora")
+        markup.add("Esplora","Torna")
         for file in mediaList:
             markup.add(file)
         msg = bot.send_message(
@@ -172,12 +177,20 @@ def getDeviceSelection(message):
 def esplora(message):
     markup=types.ReplyKeyboardRemove()
     if message.text == "Esplora" :
-        DeviceNavigation.esplora()
-        bot.send_message(
-            message.chat.id,
-            "Metodo non implementato",
-            reply_markup=markup
-            )
+        cartelleText, cartelleList = DeviceNavigation.esplora()
+        if len(cartelleList)==0:
+            bot.send_message(
+                message.chat.id,
+                "Nessuna cartella presente.\nTorno indietro",
+                reply_markup=markup
+                )
+            goBack()
+        else :
+            bot.send_message(
+                message.chat.id,
+                cartelleText,
+                reply_markup=markup
+                )
     else:
         DeviceNavigation.backHome()
         bot.send_message(
@@ -190,11 +203,49 @@ def sceltaMedia(message):
     if message.text == "Esplora":
         esplora(message)
         return
+    elif message.text == "Torna":
+        torna(message)
     markup=types.ReplyKeyboardRemove()
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
             message.chat.id,
             "Media impostato",
+            reply_markup=markup
+            )
+    
+def goBack(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+
+    mediaText, mediaList = DeviceNavigation.displayMedia()
+    if len(mediaList) == 0:
+        markup.add("Torna","Annulla")
+        msg = bot.send_message(
+            message.chat.id,
+            "Non ci sono media in questa cartella\nVuoi tornare alla cartella padre?",
+            reply_markup=markup
+            )
+        bot.register_next_step_handler(msg, torna)
+    else:
+        markup.add("Esplora")
+        for file in mediaList:
+            markup.add(file)
+        msg = bot.send_message(
+            message.chat.id,
+            mediaText + "\nScegli il file da riprodurre, oppure Esplora se vuoi esplorare il file system",
+            reply_markup=markup
+            )
+        bot.register_next_step_handler(msg, sceltaMedia)
+
+def torna(message):
+    markup=types.ReplyKeyboardRemove()
+    if message.text == "Torna" :
+        os.chdir(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
+        inCartella()
+    else:
+        DeviceNavigation.backHome()
+        bot.send_message(
+            message.chat.id,
+            "Operazione annullata",
             reply_markup=markup
             )
 
