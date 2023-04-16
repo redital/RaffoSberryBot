@@ -86,36 +86,58 @@ def media(message):
             reply_markup=markup
             )
 
+def mediaModeOnly(message):
+    if mode != "Media":
+        bot.send_message( 
+            message.chat.id,
+            "Comando disponibile solo in modalità media"
+            )
+    return mode == "Media"
+
 @bot.message_handler(commands=['dispositivi'])
 def dispositivi(message):
     markup=types.ReplyKeyboardRemove()
     
-    if mode != "Media":
-        bot.send_message( 
-            message.chat.id,
-            "Comando disponibile solo in modalità media", 
-            reply_markup=markup
-            )
+    if mediaModeOnly(message):
         return
     
-    bot.send_message( 
+    devices, devicesText = DeviceNavigation.getUsbDevices()
+    if len(devices) == 0:
+        bot.send_message(
             message.chat.id,
-            DeviceNavigation.getUsbDevices()[1], 
+            "Non ci sono dispositivi collegati",
+            reply_markup=markup
+            )
+    else:
+        bot.send_message( 
+            message.chat.id,
+            devicesText, 
             reply_markup=markup
             )
     
 @bot.message_handler(commands=['selezionaDispositivo'])
 def dispositivi(message):
-    DeviceNavigation.backHome()
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+
+    if mediaModeOnly(message):
+        return
+    
+    DeviceNavigation.backHome()
     devices = DeviceNavigation.getUsbDevices()[0]
-    for device in devices:
-        markup.add(device["NAME"])
-    msg = bot.send_message(
+    if len(devices) == 0:
+        bot.send_message(
             message.chat.id,
-            "Che dispositivo vuoi esplorare?",
+            "Non ci sono dispositivi collegati",
             reply_markup=markup
             )
+    else:
+        for device in devices:
+            markup.add(device["NAME"])
+        msg = bot.send_message(
+                message.chat.id,
+                "Che dispositivo vuoi esplorare?",
+                reply_markup=markup
+                )
     
     bot.register_next_step_handler(msg, getDeviceSelection)
     
