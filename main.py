@@ -86,7 +86,7 @@ def media(message):
             reply_markup=markup
             )
 
-def mediaModeOnly(message):
+def isMediaModeHandler(message):
     if mode != "Media":
         bot.send_message( 
             message.chat.id,
@@ -98,7 +98,7 @@ def mediaModeOnly(message):
 def dispositivi(message):
     markup=types.ReplyKeyboardRemove()
     
-    if mediaModeOnly(message):
+    if not isMediaModeHandler(message):
         return
     
     devices, devicesText = DeviceNavigation.getUsbDevices()
@@ -119,7 +119,7 @@ def dispositivi(message):
 def dispositivi(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
-    if mediaModeOnly(message):
+    if not isMediaModeHandler(message):
         return
     
     DeviceNavigation.backHome()
