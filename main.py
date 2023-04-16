@@ -264,6 +264,7 @@ def torna(message):
                 "Radice raggiunta, non puoi tornare indietro.\nUsa /selezionaDispositivo se vuoi cambiare dispositivo",
                 reply_markup=markup
                 )
+            inCartella(message)
 
     if message.text == "Torna" :
         os.chdir(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
