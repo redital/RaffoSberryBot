@@ -155,8 +155,9 @@ def getDeviceSelection(message):
 def inCartella(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     mediaText, mediaList = DeviceNavigation.displayMedia()
+    markup.add("Esplora","Torna")
     if len(mediaList) == 0:
-        markup.add("Esplora","Annulla")
+        markup.add("Annulla")
         msg = bot.send_message(
             message.chat.id,
             "Non ci sono media in questa cartella\nVuoi esplorare il file system?",
@@ -164,7 +165,6 @@ def inCartella(message):
             )
         bot.register_next_step_handler(msg, esplora)
     else:
-        markup.add("Esplora","Torna")
         for file in mediaList:
             markup.add(file)
         msg = bot.send_message(
@@ -195,6 +195,8 @@ def esplora(message):
                 reply_markup=markup
                 )
             bot.register_next_step_handler(msg, sceltaCartella)
+    elif message.text == "Torna":
+        torna(message)
     else:
         DeviceNavigation.backHome()
         bot.send_message(
@@ -210,6 +212,13 @@ def sceltaMedia(message):
     elif message.text == "Torna":
         torna(message)
         return
+    elif message.text == "Annulla":
+        DeviceNavigation.backHome()
+        bot.send_message(
+            message.chat.id,
+            "Operazione annullata",
+            reply_markup=markup
+            )
     markup=types.ReplyKeyboardRemove()
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
