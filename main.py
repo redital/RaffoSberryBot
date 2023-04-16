@@ -186,11 +186,15 @@ def esplora(message):
                 )
             goBack()
         else :
-            bot.send_message(
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            for cartella in cartelleList:
+                markup.add(cartella)
+            msg = bot.send_message(
                 message.chat.id,
                 cartelleText,
                 reply_markup=markup
                 )
+            bot.register_next_step_handler(msg, sceltaCartella)
     else:
         DeviceNavigation.backHome()
         bot.send_message(
@@ -212,6 +216,10 @@ def sceltaMedia(message):
             "Media impostato",
             reply_markup=markup
             )
+    
+def sceltaCartella (message):
+    os.chdir(os.path.join(os.getcwd(),message.text))
+    inCartella()
     
 def goBack(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -237,6 +245,24 @@ def goBack(message):
         bot.register_next_step_handler(msg, sceltaMedia)
 
 def torna(message):
+    if DeviceNavigation.isMountpoint(os.getcwd()):
+        cartelle = list(os.walk(os.getcwd()))[0][1]
+        media = DeviceNavigation.getMedia()
+        if len(cartelle)==0 and len(media)==0:
+            DeviceNavigation.backHome()
+            bot.send_message(
+                message.chat.id,
+                "In questo dispositivo non ci sono cartelle nè media.\nOperazione annullata",
+                reply_markup=markup
+                )
+            return
+        else:
+            bot.send_message(
+                message.chat.id,
+                "Radice raggiunta, non puoi tornare indietro.\nUsa /selezionaDispositivo se vuoi cambiare dispositivo",
+                reply_markup=markup
+                )
+
     markup=types.ReplyKeyboardRemove()
     if message.text == "Torna" :
         os.chdir(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))

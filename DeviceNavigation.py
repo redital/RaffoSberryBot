@@ -82,3 +82,7 @@ def esplora():
     displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(cartelle,1)])
     print(displayOutputSring)
     return displayOutputSring, cartelle
+
+def isMountpoint(path):
+    pathList = [x["MOUNTPOINT"] for x in getUsbDevices()[0]]
+    return os.path.normpath(path) in (os.path.normpath(p) for p in pathList)
