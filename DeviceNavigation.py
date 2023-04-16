@@ -18,7 +18,7 @@ def getUsbDevices():
     displayOutputSring += "\nN.B. Partizioni diverse di uno stesso disco sono considerate come dischi diversi"
     #displayOutputSring = "\n".join([str(x) + " - " + i for x , i in enumerate(usbDevices,1)])
     print(displayOutputSring)
-    return usbDevices
+    return usbDevices,displayOutputSring
 
 def parseLsblkOutput(output):
     usbDevices = []

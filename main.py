@@ -1,11 +1,13 @@
-import os
 import telebot
 from telebot import types
 import CoseSegrete
+import DeviceNavigation
 
 API_TOKEN = CoseSegrete.TOKEN
 
 bot = telebot.TeleBot(API_TOKEN)
+
+DeviceNavigation.init()
 
 mode = "Hub"
 
@@ -57,6 +59,7 @@ def hub(message):
             "Adesso sei nell'hub.\nSe non sai cosa fare qui usa l'help!", 
             reply_markup=markup
             )
+        DeviceNavigation.backHome()
     
 @bot.message_handler(commands=['media'])
 def media(message):
@@ -83,6 +86,49 @@ def media(message):
             reply_markup=markup
             )
 
+@bot.message_handler(commands=['dispositivi'])
+def dispositivi(message):
+    markup=types.ReplyKeyboardRemove()
+    
+    if mode != media:
+        bot.send_message( 
+            message.chat.id,
+            "Comando disponibile solo in modalità media", 
+            reply_markup=markup
+            )
+        return
+    
+    bot.send_message( 
+            message.chat.id,
+            DeviceNavigation.getUsbDevices()[1], 
+            reply_markup=markup
+            )
+    
+@bot.message_handler(commands=['selezionaDispositivo'])
+def dispositivi(message):
+    DeviceNavigation.backHome()
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    devices = DeviceNavigation.getUsbDevices()[0]
+    for device in devices:
+        markup.add(device["NAME"])
+    msg = bot.send_message(
+            message.chat.id,
+            "Che dispositivo vuoi esplorare?",
+            reply_markup=markup
+            )
+    
+    bot.register_next_step_handler(msg, getDeviceSelection)
+    
+def getDeviceSelection(message):
+    selection = -1
+    devices = DeviceNavigation.getUsbDevices()[0]
+    for i in range(len(devices)):
+        if message.text == devices[i]["NAME"]:
+            selection = i
+            break
+    DeviceNavigation.deviceSelection(devices,selection)
+
+    return "stocazzo"
 
 
 
