@@ -48,7 +48,7 @@ def deviceSelection(usbDevices,selection):
     sceltaMedia(media)
 
 def getMedia():
-    cartelle, file = list(os.getcwd())[0][1:]
+    cartelle, file = list(os.walk(os.getcwd()))[0][1:]
     media = [x for x in file if isMedia(x)]
     return media
 
