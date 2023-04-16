@@ -213,8 +213,7 @@ def sceltaMedia(message):
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
             message.chat.id,
-            "Media impostato",
-            reply_markup=markup
+            "Media impostato"
             )
     
 def sceltaCartella (message):
