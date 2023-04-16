@@ -243,7 +243,7 @@ def goBack(message):
             )
         bot.register_next_step_handler(msg, torna)
     else:
-        markup.add("Esplora")
+        markup.add("Esplora","Torna")
         for file in mediaList:
             markup.add(file)
         msg = bot.send_message(
