@@ -209,6 +209,7 @@ def sceltaMedia(message):
         return
     elif message.text == "Torna":
         torna(message)
+        return
     markup=types.ReplyKeyboardRemove()
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
