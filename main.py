@@ -187,6 +187,7 @@ def esplora(message):
             goBack(message)
         else :
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup.add("Torna","Annulla")
             for cartella in cartelleList:
                 markup.add(cartella)
             msg = bot.send_message(
@@ -198,12 +199,7 @@ def esplora(message):
     elif message.text == "Torna":
         torna(message)
     else:
-        DeviceNavigation.backHome()
-        bot.send_message(
-            message.chat.id,
-            "Operazione annullata",
-            reply_markup=markup
-            )
+        annulla(message)
         
 def sceltaMedia(message):
     if message.text == "Esplora":
@@ -213,12 +209,8 @@ def sceltaMedia(message):
         torna(message)
         return
     elif message.text == "Annulla":
-        DeviceNavigation.backHome()
-        bot.send_message(
-            message.chat.id,
-            "Operazione annullata",
-            reply_markup=markup
-            )
+        annulla(message)
+        return
     markup=types.ReplyKeyboardRemove()
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
@@ -227,6 +219,12 @@ def sceltaMedia(message):
             )
     
 def sceltaCartella (message):
+    if message.text == "Torna":
+        torna(message)
+        return
+    elif message.text == "Annulla":
+        annulla(message)
+        return
     os.chdir(os.path.join(os.getcwd(),message.text))
     inCartella(message)
     
@@ -279,13 +277,16 @@ def torna(message):
         os.chdir(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
         inCartella(message)
     else:
-        DeviceNavigation.backHome()
-        bot.send_message(
-            message.chat.id,
-            "Operazione annullata",
-            reply_markup=markup
-            )
-
+        annulla(message)
+        
+def annulla(message):
+    markup=types.ReplyKeyboardRemove()
+    DeviceNavigation.backHome()
+    bot.send_message(
+        message.chat.id,
+        "Operazione annullata",
+        reply_markup=markup
+        )
     
 
 
