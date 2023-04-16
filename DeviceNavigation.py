@@ -42,11 +42,15 @@ def deviceInfoToString(deviceInfo):
 def deviceSelection(usbDevices,selection):
     deviceInfo = usbDevices[selection]
     os.chdir(deviceInfo["MOUNTPOINT"])
-    cartelle, file = list(os.walk(deviceInfo["MOUNTPOINT"]))[0][1:]
-    media = [x for x in file if isMedia(x)]
+    media = getMedia()
     return displayMedia(media), media
     print("Digita il nome del file che vuoi riprodurre, o forse vuoi esplorare le altre cartelle?")
     sceltaMedia(media)
+
+def getMedia():
+    cartelle, file = list(os.getcwd())[0][1:]
+    media = [x for x in file if isMedia(x)]
+    return media
 
 def isMedia(file):
     permessi=["mp4","mp3","mkv"]
@@ -58,15 +62,16 @@ def displayMedia(media):
     print(displayOutputSring)
     return displayOutputSring
 
-def sceltaMedia(media):
-    scelta = input()
+def sceltaMedia(media,scelta):
+    #scelta = input()
     if scelta == "Esplora":
         esplora()
     elif scelta in media or scelta in [x.split(".")[0] for x in media]:
         VLCHandler.setMedia(scelta)
     else:
-        print("Scusami ma non ho capito cosa vuoi riprodurre.\nRiprova")
-        sceltaMedia(media)
+        print("Errore")
+        #print("Scusami ma non ho capito cosa vuoi riprodurre.\nRiprova")
+        #sceltaMedia(media)
 
 def esplora():
     pass

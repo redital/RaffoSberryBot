@@ -142,7 +142,7 @@ def dispositivi(message):
     bot.register_next_step_handler(msg, getDeviceSelection)
     
 def getDeviceSelection(message):
-    markup=types.ReplyKeyboardRemove()
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     selection = -1
     devices = DeviceNavigation.getUsbDevices()[0]
     for i in range(len(devices)):
@@ -151,21 +151,51 @@ def getDeviceSelection(message):
             break
     mediaText, mediaList = DeviceNavigation.deviceSelection(devices,selection)
     if len(mediaList) == 0:
-        bot.send_message(
+        markup.add("Esplora","Annulla")
+        msg = bot.send_message(
             message.chat.id,
-            "Non ci sono media qui",
+            "Non ci sono media in questa cartella\nVuoi esplorare il file system?",
             reply_markup=markup
             )
+        bot.register_next_step_handler(msg, esplora)
     else:
+        markup.add("Esplora")
         for file in media:
             markup.add(file)
         msg = bot.send_message(
             message.chat.id,
-            mediaText,
+            mediaText + "\nScegli il file da riprodurre, oppure Esplora se vuoi esplorare il file system",
             reply_markup=markup
             )
+        bot.register_next_step_handler(msg, getDeviceSelection)
+
+def esplora(message):
+    markup=types.ReplyKeyboardRemove()
+    if message.text == "Esplora" :
+        DeviceNavigation.esplora()
+        bot.send_message(
+            message.chat.id,
+            "Metodo non implementato",
+            reply_markup=markup
+            )
+    else:
+        DeviceNavigation.backHome()
+        bot.send_message(
+            message.chat.id,
+            "Operazione annullata",
+            reply_markup=markup
+            )
+        
+def sceltaMedia(message):
+    markup=types.ReplyKeyboardRemove()
+    DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
+    bot.send_message(
+            message.chat.id,
+            "Media impostato",
+            reply_markup=markup
+            )
+
     
-        #bot.register_next_step_handler(msg, getDeviceSelection)
 
 
 
