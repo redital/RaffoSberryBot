@@ -90,7 +90,7 @@ def media(message):
 def dispositivi(message):
     markup=types.ReplyKeyboardRemove()
     
-    if mode != media:
+    if mode != "Media":
         bot.send_message( 
             message.chat.id,
             "Comando disponibile solo in modalità media", 
