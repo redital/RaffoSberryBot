@@ -167,7 +167,7 @@ def getDeviceSelection(message):
             mediaText + "\nScegli il file da riprodurre, oppure Esplora se vuoi esplorare il file system",
             reply_markup=markup
             )
-        bot.register_next_step_handler(msg, getDeviceSelection)
+        bot.register_next_step_handler(msg, sceltaMedia)
 
 def esplora(message):
     markup=types.ReplyKeyboardRemove()
