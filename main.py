@@ -245,6 +245,8 @@ def goBack(message):
         bot.register_next_step_handler(msg, sceltaMedia)
 
 def torna(message):
+    markup=types.ReplyKeyboardRemove()
+    
     if DeviceNavigation.isMountpoint(os.getcwd()):
         cartelle = list(os.walk(os.getcwd()))[0][1]
         media = DeviceNavigation.getMedia()
@@ -263,7 +265,6 @@ def torna(message):
                 reply_markup=markup
                 )
 
-    markup=types.ReplyKeyboardRemove()
     if message.text == "Torna" :
         os.chdir(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
         inCartella()
