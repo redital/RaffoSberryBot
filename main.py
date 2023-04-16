@@ -187,6 +187,9 @@ def esplora(message):
             )
         
 def sceltaMedia(message):
+    if message.text == "Esplora":
+        esplora(message)
+        return
     markup=types.ReplyKeyboardRemove()
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
