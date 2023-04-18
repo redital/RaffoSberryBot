@@ -412,7 +412,7 @@ def pause(message):
     if not isMediaModeHandler(message):
         return
 
-    VLCHandler.toggleFullScreen()
+    VLCHandler.toggleMute()
     
     bot.send_message(
         message.chat.id,
