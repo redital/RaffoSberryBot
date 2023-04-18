@@ -222,15 +222,11 @@ def sceltaMedia(message):
     elif message.text == "Annulla":
         annulla(message)
         return
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    markup.add(
-        ["API_TOKEN","W"]
-    )
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
             message.chat.id,
             "Media impostato",
-            reply_markup=markup
+            reply_markup=telecomando()
             )
     
 def sceltaCartella (message):
@@ -310,138 +306,118 @@ def annulla(message):
 #=============================================================================================================================================
 
 def telecomando():
-    telecomando = [] 
+    telecomando = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     if VLCHandler.getState() == State.Stopped:
-        return ["Play"]
+        return telecomando.add("Play")
 
-    primaRiga = ["-10"]
     if VLCHandler.getState() == State.Paused:
-        primaRiga.append("Play")
+        telecomando.add("-10","Play","+10")
     elif VLCHandler.getState() == State.Playing:
-        primaRiga.append("Pause")
-    primaRiga.append("+10")
+        telecomando.add("-10","Pause","+10")
 
-    telecomando.append(primaRiga)
-
-    secondaRiga=[]
+    elemento1 = ""
     if VLCHandler.isMute():
-        secondaRiga.append("Riattiva volume")
+        elemento1 = "Riattiva volume"
     else:
-        secondaRiga.append("Muto")
+        elemento1 = "Muto"
 
+    elemento2=""
     if VLCHandler.isFullScreen():
-        secondaRiga.append("Finestra")
+        elemento2 = "Finestra"
     else:
-        secondaRiga.append("Schermo intero")
+        elemento2 = "Schermo intero"
 
-    telecomando.append(primaRiga)
+    telecomando.add(elemento1,elemento2)
 
-    telecomando.append(["Stop"])
+    telecomando.add("Stop")
     
     return telecomando
 
 
 @bot.message_handler(func=lambda message: isMediaMode() and message.text=="Play")
 def play(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     if not isMediaModeHandler(message):
         return
     
     VLCHandler.play()
-
-    markup.add(telecomando())
     
     bot.send_message(
         message.chat.id,
         "Inizio riproduzione",
-        reply_markup=markup
+        reply_markup=telecomando()
         )
     
 @bot.message_handler(func=lambda message: isMediaMode() and message.text=="Pause")
 def pause(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     if not isMediaModeHandler(message):
         return
 
     VLCHandler.pause()
     
-    markup.add(telecomando())
     
     bot.send_message(
         message.chat.id,
         "Media in pausa",
-        reply_markup=markup
+        reply_markup=telecomando()
         )
     
 @bot.message_handler(func=lambda message: isMediaMode() and message.text=="Stop")
 def stop(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     if not isMediaModeHandler(message):
         return
 
     VLCHandler.stop()
     
-    markup.add(telecomando())
-    
     bot.send_message(
         message.chat.id,
         "Riproduzione interrotta",
-        reply_markup=markup
+        reply_markup=telecomando()
         )
     
 @bot.message_handler(func=lambda message: isMediaMode() and (message.text=="+10" or message.text=="-10"))
 def skip(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     if not isMediaModeHandler(message):
         return
 
     VLCHandler.skip(message.text)
     
-    markup.add(telecomando())
-    
     bot.send_message(
         message.chat.id,
         "Skip " + message.text + " secondi",
-        reply_markup=markup
+        reply_markup=telecomando()
         )
     
 @bot.message_handler(func=lambda message: isMediaMode() and (message.text=="Finestra" or message.text=="Schermo intero"))
 def pause(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     if not isMediaModeHandler(message):
         return
 
     VLCHandler.toggleFullScreen()
-    
-    markup.add(telecomando())
     
     bot.send_message(
         message.chat.id,
         "Schermo intero:" + str(VLCHandler.isFullScreen()),
-        reply_markup=markup
+        reply_markup=telecomando()
         )
     
 @bot.message_handler(func=lambda message: isMediaMode() and (message.text=="Muto" or message.text=="Riattiva volume"))
 def pause(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     if not isMediaModeHandler(message):
         return
 
     VLCHandler.toggleFullScreen()
     
-    markup.add(telecomando())
-    
     bot.send_message(
         message.chat.id,
         "Muto:" + str(VLCHandler.isMute()),
-        reply_markup=markup
+        reply_markup=telecomando()
         )
 
 
