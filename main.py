@@ -315,7 +315,7 @@ def telecomando():
     if VLCHandler.getState() == State.Stopped or VLCHandler.getState() == State.NothingSpecial:
         return telecomando.add("Play")
 
-    if VLCHandler.getState() == State.Paused:
+    if VLCHandler.getState() == State.Paused or VLCHandler.getState() == State.NothingSpecial:
         telecomando.add("-10","Play","+10")
     elif VLCHandler.getState() == State.Playing:
         telecomando.add("-10","Pause","+10")
@@ -327,12 +327,14 @@ def telecomando():
         elemento1 = "Muto"
 
     elemento2=""
-    if VLCHandler.isFullScreen():
+    if not VLCHandler.isFullScreen():
         elemento2 = "Finestra"
     else:
         elemento2 = "Schermo intero"
 
     telecomando.add(elemento1,elemento2)
+
+    telecomando.add("Quanto manca?")
 
     telecomando.add("Stop")
     
@@ -388,7 +390,7 @@ def skip(message):
     if not isMediaModeHandler(message):
         return
 
-    VLCHandler.skip(message.text)
+    VLCHandler.skip(int(message.text))
     
     bot.send_message(
         message.chat.id,
@@ -423,6 +425,22 @@ def pause(message):
         "Muto:" + str(VLCHandler.isMute()),
         reply_markup=telecomando()
         )
+    
+@bot.message_handler(func=lambda message: isMediaMode() and message.text=="Quanto manca?")
+def stop(message):
+
+    if not isMediaModeHandler(message):
+        return
+
+    bot.send_message(
+        message.chat.id,
+        VLCHandler.quantoManca(),
+        reply_markup=telecomando()
+        )
+    
+
+
+
 
 
 
