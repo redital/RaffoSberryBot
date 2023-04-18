@@ -70,4 +70,4 @@ def quantoManca():
     return text
 
 def getState():
-    vlcplayer.get_state()
+    return vlcplayer.get_state()
