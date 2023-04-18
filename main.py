@@ -222,7 +222,7 @@ def sceltaMedia(message):
     elif message.text == "Annulla":
         annulla(message)
         return
-    markup = types.ReplyKeyboardMarkup(telecomando(), one_time_keyboard=True, resize_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(keyboard = telecomando(), one_time_keyboard=True, resize_keyboard=True)
     
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
