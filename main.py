@@ -348,7 +348,7 @@ def play(message):
     
     VLCHandler.play()
 
-    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True, resize_keyboard=True)
     
     bot.send_message(
         message.chat.id,
@@ -364,7 +364,7 @@ def pause(message):
 
     VLCHandler.pause()
     
-    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True, resize_keyboard=True)
     
     bot.send_message(
         message.chat.id,
@@ -380,7 +380,7 @@ def stop(message):
 
     VLCHandler.stop()
     
-    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True, resize_keyboard=True)
     
     bot.send_message(
         message.chat.id,
@@ -396,7 +396,7 @@ def skip(message):
 
     VLCHandler.skip(message.text)
     
-    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True, resize_keyboard=True)
     
     bot.send_message(
         message.chat.id,
@@ -412,7 +412,7 @@ def pause(message):
 
     VLCHandler.toggleFullScreen()
     
-    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True, resize_keyboard=True)
     
     bot.send_message(
         message.chat.id,
@@ -428,7 +428,7 @@ def pause(message):
 
     VLCHandler.toggleFullScreen()
     
-    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(telecomando(),one_time_keyboard=True, resize_keyboard=True)
     
     bot.send_message(
         message.chat.id,
