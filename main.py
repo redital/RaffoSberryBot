@@ -308,6 +308,10 @@ def annulla(message):
 def telecomando():
     telecomando = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
+    print(VLCHandler.getState() == State.Stopped)
+    print(VLCHandler.getState())
+    print(State.Stopped)
+
     if VLCHandler.getState() == State.Stopped:
         return telecomando.add("Play")
 
