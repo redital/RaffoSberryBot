@@ -2,6 +2,7 @@ import telebot
 from telebot import types
 import CoseSegrete
 import DeviceNavigation
+import VLCHandler
 import os
 
 API_TOKEN = CoseSegrete.TOKEN
@@ -81,6 +82,7 @@ def media(message):
             )
     else:
         mode="Media"
+        VLCHandler.setUp()
         bot.send_message(
             message.chat.id,
             "Adesso sei in modalità media.\nSe non sai cosa fare qui usa l'help!", 
