@@ -9,6 +9,12 @@ def setUp():
     vlc_obj= vlc.Instance()
     global vlcplayer
     vlcplayer = vlc_obj.media_player_new()
+    
+def clear():
+    global vlc_obj
+    vlc_obj = None
+    global vlcplayer
+    vlcplayer = None
 
 def setMedia(src):
     vlcmedia = vlc_obj.media_new(src) 
@@ -30,11 +36,19 @@ def unmute():
 def toggleMute():
     vlcplayer.audio_toggle_mute()
 
+def isMute():
+    mute = vlcplayer.audio_get_mute()
+    return not bool(mute)
+
 def fullScreen():
     vlcplayer.set_fullscreen(True)
 
-def fullScreen():
+def toggleFullScreen():
     vlcplayer.toggle_fullscreen()
+
+def isFullScreen():
+    fullscreen = vlcplayer.get_fullscreen()
+    return not bool(fullscreen)
 
 def skip(n):
     vlcplayer.set_time(vlcplayer.get_time()+(n*1000))
@@ -53,3 +67,7 @@ def quantoManca():
     minuti = mancante//60
     secondi = mancante - (minuti*60)
     text = "Mancano {0} minuti e {1} secondi di media\nTrascorso: {2}%".format(minuti,secondi,posizione*100//1)
+    return text
+
+def getState():
+    vlcplayer.get_state()

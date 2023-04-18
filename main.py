@@ -4,6 +4,7 @@ import CoseSegrete
 import DeviceNavigation
 import VLCHandler
 import os
+from vlc import State
 
 API_TOKEN = CoseSegrete.TOKEN
 
@@ -88,14 +89,22 @@ def media(message):
             "Adesso sei in modalità media.\nSe non sai cosa fare qui usa l'help!", 
             reply_markup=markup
             )
+        
+def isMediaMode():
+    return mode=="Media"
 
 def isMediaModeHandler(message):
-    if mode != "Media":
+    if not isMediaMode():
         bot.send_message( 
             message.chat.id,
             "Comando disponibile solo in modalità media"
             )
-    return mode == "Media"
+    return isMediaMode()
+
+#=============================================================================================================================================
+#                                                   Navigazione nel file system
+#=============================================================================================================================================
+
 
 @bot.message_handler(commands=['dispositivi'])
 def dispositivi(message):
@@ -213,11 +222,13 @@ def sceltaMedia(message):
     elif message.text == "Annulla":
         annulla(message)
         return
-    markup=types.ReplyKeyboardRemove()
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    markup.add(telecomando())
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
             message.chat.id,
-            "Media impostato"
+            "Media impostato",
+            reply_markup=markup
             )
     
 def sceltaCartella (message):
@@ -291,7 +302,145 @@ def annulla(message):
         )
     
 
+    
+#=============================================================================================================================================
+#                                                   Comandi per VLC
+#=============================================================================================================================================
 
+def telecomando():
+    telecomando = [] 
+
+    if VLCHandler.getState() == State.Stopped:
+        return ["Play"]
+
+    primaRiga = ["-10"]
+    if VLCHandler.getState() == State.Paused:
+        primaRiga.append("Play")
+    elif VLCHandler.getState() == State.Playing:
+        primaRiga.append("Pause")
+    primaRiga.append("+10")
+
+    telecomando.append(primaRiga)
+
+    secondaRiga=[]
+    if VLCHandler.isMute():
+        secondaRiga.append("Riattiva volume")
+    else:
+        secondaRiga.append("Muto")
+
+    if VLCHandler.isFullScreen():
+        secondaRiga.append("Finestra")
+    else:
+        secondaRiga.append("Schermo intero")
+
+    telecomando.append(primaRiga)
+
+    telecomando.append(["Stop"])
+    
+    return telecomando
+
+
+@bot.message_handler(func=lambda message: isMediaMode() and message.text=="Play")
+def play(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+
+    if not isMediaModeHandler(message):
+        return
+    
+    VLCHandler.play()
+
+    markup.add(telecomando())
+    
+    bot.send_message(
+        message.chat.id,
+        "Inizio riproduzione",
+        reply_markup=markup
+        )
+    
+@bot.message_handler(func=lambda message: isMediaMode() and message.text=="Pause")
+def pause(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+
+    if not isMediaModeHandler(message):
+        return
+
+    VLCHandler.pause()
+    
+    markup.add(telecomando())
+    
+    bot.send_message(
+        message.chat.id,
+        "Media in pausa",
+        reply_markup=markup
+        )
+    
+@bot.message_handler(func=lambda message: isMediaMode() and message.text=="Stop")
+def stop(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+
+    if not isMediaModeHandler(message):
+        return
+
+    VLCHandler.stop()
+    
+    markup.add(telecomando())
+    
+    bot.send_message(
+        message.chat.id,
+        "Riproduzione interrotta",
+        reply_markup=markup
+        )
+    
+@bot.message_handler(func=lambda message: isMediaMode() and (message.text=="+10" or message.text=="-10"))
+def skip(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+
+    if not isMediaModeHandler(message):
+        return
+
+    VLCHandler.skip(message.text)
+    
+    markup.add(telecomando())
+    
+    bot.send_message(
+        message.chat.id,
+        "Skip " + message.text + " secondi",
+        reply_markup=markup
+        )
+    
+@bot.message_handler(func=lambda message: isMediaMode() and (message.text=="Finestra" or message.text=="Schermo intero"))
+def pause(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+
+    if not isMediaModeHandler(message):
+        return
+
+    VLCHandler.toggleFullScreen()
+    
+    markup.add(telecomando())
+    
+    bot.send_message(
+        message.chat.id,
+        "Schermo intero:" + str(VLCHandler.isFullScreen()),
+        reply_markup=markup
+        )
+    
+@bot.message_handler(func=lambda message: isMediaMode() and (message.text=="Muto" or message.text=="Riattiva volume"))
+def pause(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+
+    if not isMediaModeHandler(message):
+        return
+
+    VLCHandler.toggleFullScreen()
+    
+    markup.add(telecomando())
+    
+    bot.send_message(
+        message.chat.id,
+        "Muto:" + str(VLCHandler.isMute()),
+        reply_markup=markup
+        )
 
 
 
