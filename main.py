@@ -223,7 +223,8 @@ def sceltaMedia(message):
         annulla(message)
         return
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    markup.add(telecomando())
+    for row in telecomando():
+        markup.add(row)
     DeviceNavigation.sceltaMedia(DeviceNavigation.getMedia(), message.text)
     bot.send_message(
             message.chat.id,
@@ -349,7 +350,8 @@ def play(message):
     
     VLCHandler.play()
 
-    markup.add(telecomando())
+    for row in telecomando():
+        markup.add(row)
     
     bot.send_message(
         message.chat.id,
@@ -366,7 +368,8 @@ def pause(message):
 
     VLCHandler.pause()
     
-    markup.add(telecomando())
+    for row in telecomando():
+        markup.add(row)
     
     bot.send_message(
         message.chat.id,
@@ -383,7 +386,8 @@ def stop(message):
 
     VLCHandler.stop()
     
-    markup.add(telecomando())
+    for row in telecomando():
+        markup.add(row)
     
     bot.send_message(
         message.chat.id,
@@ -400,7 +404,8 @@ def skip(message):
 
     VLCHandler.skip(message.text)
     
-    markup.add(telecomando())
+    for row in telecomando():
+        markup.add(row)
     
     bot.send_message(
         message.chat.id,
@@ -417,7 +422,8 @@ def pause(message):
 
     VLCHandler.toggleFullScreen()
     
-    markup.add(telecomando())
+    for row in telecomando():
+        markup.add(row)
     
     bot.send_message(
         message.chat.id,
@@ -434,7 +440,8 @@ def pause(message):
 
     VLCHandler.toggleFullScreen()
     
-    markup.add(telecomando())
+    for row in telecomando():
+        markup.add(row)
     
     bot.send_message(
         message.chat.id,
