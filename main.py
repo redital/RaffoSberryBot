@@ -312,7 +312,7 @@ def telecomando():
     print(VLCHandler.getState())
     print(State.Stopped)
 
-    if VLCHandler.getState() == State.Stopped or VLCHandler.getState() == None:
+    if VLCHandler.getState() == State.Stopped or VLCHandler.getState() == State.NothingSpecial:
         return telecomando.add("Play")
 
     if VLCHandler.getState() == State.Paused:
