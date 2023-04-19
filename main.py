@@ -255,7 +255,8 @@ def sceltaMedia(message):
 def sceltaCartella (message):
     if message.text == "telecomando" and isMediaMode():
         riprendiTelecomando(message)
-    if message.text == "Torna":
+        return
+    elif message.text == "Torna":
         torna(message)
         return
     elif message.text == "Annulla":
@@ -343,7 +344,8 @@ def annulla(message):
 def telecomando():
     telecomando = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
-    if VLCHandler.getState() == State.Stopped or VLCHandler.getState() == State.NothingSpecial:
+    if VLCHandler.getState() == State.Stopped or VLCHandler.getState() == State.NothingSpecial: # C'è anche il caso Ended e Opening
+
         return telecomando.add("Play").add("Cambia media")
 
     if VLCHandler.getState() == State.Paused or VLCHandler.getState() == State.NothingSpecial:
