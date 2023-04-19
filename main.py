@@ -501,8 +501,6 @@ def riprendiTelecomando(message):
 @bot.message_handler(func=lambda message: isMediaMode() and message.text=="Cambia media")
 def cambiaMedia(message):
 
-    inCartella(message)
-
     if not isMediaModeHandler(message):
         return
 
