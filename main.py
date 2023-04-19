@@ -480,6 +480,15 @@ def stop(message):
 @bot.message_handler(func=lambda message: isMediaMode() and message.text=="telecomando")
 def riprendiTelecomando(message):
 
+    if VLCHandler.vlcplayer.get_media()==None:
+        bot.send_message(
+        message.chat.id,
+        "Imposta prima un media!",
+        reply_markup=types.ReplyKeyboardRemove()
+        )
+        inCartella(message)
+        return
+    
     if not isMediaModeHandler(message):
         return
 
@@ -492,15 +501,7 @@ def riprendiTelecomando(message):
 @bot.message_handler(func=lambda message: isMediaMode() and message.text=="Cambia media")
 def cambiaMedia(message):
 
-    if VLCHandler.vlcplayer.get_media()==None:
-        bot.send_message(
-        message.chat.id,
-        "Imposta prima un media!",
-        reply_markup=types.ReplyKeyboardRemove()
-        )
-        inCartella(message)
-        return
-
+    inCartella(message)
 
     if not isMediaModeHandler(message):
         return
