@@ -66,7 +66,7 @@ def quantoManca():
     mancante = (durata-visto)//1000
     minuti = mancante//60
     secondi = mancante - (minuti*60)
-    text = "Mancano {0} minuti e {1} secondi di media\nTrascorso: {2}%".format(minuti,secondi,posizione*100//1)
+    text = "Mancano {0} minuti e {1} secondi di media\nTrascorso: {2}%".format(minuti,secondi,(posizione*1000//1)/10)
     return text
 
 def getState():

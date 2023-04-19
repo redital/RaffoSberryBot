@@ -34,12 +34,33 @@ def help(message):
     messaggiHelp = {}
     messaggiHelp["Hub"] = """\
 Bot realizzato per il controllo del fantastico RaffoSberry.
-Adesso ti trovi nell'hub, digita (o premi) /media per entrare nella modalità media in cui portrai visualizzare i media presenti in una evenutale periferica collegata e riprorne il contenuto
+Adesso ti trovi nell'hub, digita (o premi) /media per entrare nella modalità media in cui portrai visualizzare i file multimediali presenti in una evenutale periferica collegata e riprodurne il contenuto
+
+Purtroppo per ora c'è solo questa modalità, ma prima o poi ne aggiungerò altre!
     """
     messaggiHelp["Media"] = """\
 Bot realizzato per il controllo del fantastico RaffoSberry.
-Adesso ti trovi in modalità media in cui portrai visualizzare i media presenti in una evenutale periferica collegata e riprorne il contenuto. 
+Adesso ti trovi in modalità media in cui portrai visualizzare i media presenti in una evenutale periferica collegata e riprodurne il contenuto. 
 Digita (o premi) /hub per tornare all'hub
+Se invece vuoi usare questra modalità, ti spiego un po' come funziona.
+
+Per rendere tutto più semplice questo bot ha pochi comandi ma si affida per lo più sulle tastiere, si consiglia quindi di usare quelle piuttosto che scrivere da se gli input.
+
+Per cominciare puoi digitare (o premere) /selezionaDispositivo per scegliere da quale periferica si vuole leggere i file multimediali. I tasti che compariranno mostrano il nome della periferica o della partizione interessata, da questa però spesso non si capisce molto, si può quindi usare /dispositivi per avere qualche informazione in più (non dimenticare di usare di nuovo /selezionaDispositivo poi per scegliere!).
+Una volta scelta la periferica si può navigare al suo interno. Leggi i messaggi che riceverai, usa le tastiere che compariranno e sarà facilissimo!
+
+Scelto il file multimediale comparirà il telecomando, è una tastiera come tutte le altre ma è quella che ti permette effettivamente di comandare la riproduzione del file multimediale. 
+I tasti del telecomando ti permetteranno di:
+Tornare indietro di 10 secondi
+Andare avati di 10 secondi
+Fermare/riprendere la riproduzione (play/pausa)
+Attivare/disattivare il muto
+Attivare/disattivare il fullscreen
+Sapere quanto manca al termine della riproduzione
+Interrompere la riproduzione
+In ogni momento anche durante la riproduzione si può riprendere la navigazione del file system ricominciando da /selezionaDispositivo, per ritrovare il telecomando basterà scrivere telecomando in qualsiasi momento.
+
+Buona visione!
     """
 
     bot.send_message(message.chat.id, messaggiHelp[mode], reply_markup=markup)
@@ -159,9 +180,11 @@ def getDeviceSelection(message):
     for i in range(len(devices)):
         if message.text == devices[i]["NAME"]:
             selection = i
-            break
-    DeviceNavigation.deviceSelection(devices,selection)
-    inCartella(message)
+            DeviceNavigation.deviceSelection(devices,selection)
+            inCartella(message)
+            return
+    if message.text == "/dispositivi":
+        dispositivi(message)
     
 def inCartella(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -230,6 +253,8 @@ def sceltaMedia(message):
             )
     
 def sceltaCartella (message):
+    if message.text == "telecomando" and isMediaMode():
+        riprendiTelecomando(message)
     if message.text == "Torna":
         torna(message)
         return
@@ -300,6 +325,9 @@ def torna(message):
 def annulla(message):
     markup=types.ReplyKeyboardRemove()
     DeviceNavigation.backHome()
+    if message.text == "telecomando" and isMediaMode():
+        riprendiTelecomando(message)
+        return
     bot.send_message(
         message.chat.id,
         "Operazione annullata",
@@ -315,12 +343,8 @@ def annulla(message):
 def telecomando():
     telecomando = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
-    print(VLCHandler.getState() == State.Stopped)
-    print(VLCHandler.getState())
-    print(State.Stopped)
-
     if VLCHandler.getState() == State.Stopped or VLCHandler.getState() == State.NothingSpecial:
-        return telecomando.add("Play")
+        return telecomando.add("Play").add("Cambia media")
 
     if VLCHandler.getState() == State.Paused or VLCHandler.getState() == State.NothingSpecial:
         telecomando.add("-10","Play","+10")
@@ -328,7 +352,7 @@ def telecomando():
         telecomando.add("-10","Pause","+10")
 
     elemento1 = ""
-    if VLCHandler.isMute():
+    if not VLCHandler.isMute():
         elemento1 = "Riattiva volume"
     else:
         elemento1 = "Muto"
@@ -355,6 +379,8 @@ def play(message):
         return
     
     VLCHandler.play()
+    
+    sleep(2.0)
     
     bot.send_message(
         message.chat.id,
@@ -417,7 +443,7 @@ def pause(message):
     
     bot.send_message(
         message.chat.id,
-        "Schermo intero:" + str(VLCHandler.isFullScreen()),
+        "Schermo intero:" + str(not VLCHandler.isFullScreen()),
         reply_markup=telecomando()
         )
     
@@ -433,7 +459,7 @@ def pause(message):
 
     bot.send_message(
         message.chat.id,
-        "Muto:" + str(VLCHandler.isMute()),
+        "Muto:" + str(not VLCHandler.isMute()),
         reply_markup=telecomando()
         )
     
@@ -450,7 +476,7 @@ def stop(message):
         )
     
 @bot.message_handler(func=lambda message: isMediaMode() and message.text=="telecomando")
-def stop(message):
+def riprendiTelecomando(message):
 
     if not isMediaModeHandler(message):
         return
@@ -460,6 +486,24 @@ def stop(message):
         "Hai perso il telecomando? Eccolo qua!",
         reply_markup=telecomando()
         )
+    
+@bot.message_handler(func=lambda message: isMediaMode() and message.text=="Cambia media")
+def cambiaMedia(message):
+
+    if VLCHandler.vlcplayer.get_media()==None:
+        bot.send_message(
+        message.chat.id,
+        "Imposta prima un media!",
+        reply_markup=types.ReplyKeyboardRemove()
+        )
+        inCartella(message)
+        return
+
+
+    if not isMediaModeHandler(message):
+        return
+
+    inCartella(message)
 
 
 
