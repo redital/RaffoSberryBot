@@ -150,8 +150,7 @@ def dispositivi(message):
                 "Che dispositivo vuoi esplorare?",
                 reply_markup=markup
                 )
-    
-    bot.register_next_step_handler(msg, getDeviceSelection)
+        bot.register_next_step_handler(msg, getDeviceSelection)
     
 def getDeviceSelection(message):
     selection = -1
