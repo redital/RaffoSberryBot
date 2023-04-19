@@ -4,6 +4,7 @@ import CoseSegrete
 import DeviceNavigation
 import VLCHandler
 import os
+from time import sleep
 from vlc import State
 
 API_TOKEN = CoseSegrete.TOKEN
@@ -235,7 +236,14 @@ def sceltaCartella (message):
     elif message.text == "Annulla":
         annulla(message)
         return
-    os.chdir(os.path.join(os.getcwd(),message.text))
+    try:
+        os.chdir(os.path.join(os.getcwd(),message.text))
+    except:
+        bot.send_message(
+            message.chat.id,
+            "Qualcosa è andato storto, forse hai sbaliato a digitare il nome della cartella?",
+            reply_markup=types.ReplyKeyboardRemove()
+            )
     inCartella(message)
     
 def goBack(message):
@@ -405,6 +413,8 @@ def pause(message):
 
     VLCHandler.toggleFullScreen()
     
+    sleep(0.5)
+    
     bot.send_message(
         message.chat.id,
         "Schermo intero:" + str(VLCHandler.isFullScreen()),
@@ -419,6 +429,8 @@ def pause(message):
 
     VLCHandler.toggleMute()
     
+    sleep(0.5)
+
     bot.send_message(
         message.chat.id,
         "Muto:" + str(VLCHandler.isMute()),
@@ -437,6 +449,17 @@ def stop(message):
         reply_markup=telecomando()
         )
     
+@bot.message_handler(func=lambda message: isMediaMode() and message.text=="telecomando")
+def stop(message):
+
+    if not isMediaModeHandler(message):
+        return
+
+    bot.send_message(
+        message.chat.id,
+        "Hai perso il telecomando? Eccolo qua!",
+        reply_markup=telecomando()
+        )
 
 
 
