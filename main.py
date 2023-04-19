@@ -150,7 +150,7 @@ def dispositivi(message):
             )
     
 @bot.message_handler(commands=['selezionaDispositivo'])
-def dispositivi(message):
+def selezionaDispositivi(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     if not isMediaModeHandler(message):
@@ -486,7 +486,7 @@ def riprendiTelecomando(message):
         "Imposta prima un media!",
         reply_markup=types.ReplyKeyboardRemove()
         )
-        inCartella(message)
+        selezionaDispositivi(message)
         return
     
     if not isMediaModeHandler(message):
