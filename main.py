@@ -20,9 +20,10 @@ mode = "Hub"
 #=============================================================================================================================================
 
 
-@bot.message_handler(func=lambda message: message.id!=CoseSegrete.owner_id)
+@bot.message_handler(func=lambda message: message.chat.id!=CoseSegrete.owner_id)
 def cambiaMedia(message):
-
+    
+    print(message.chat.id)
     bot.send_message(message.chat.id, "Solo il proprietario del Raffosberry può usare questo bot!")
     return
 
