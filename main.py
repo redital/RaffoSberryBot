@@ -15,6 +15,27 @@ DeviceNavigation.init()
 
 mode = "Hub"
 
+#=============================================================================================================================================
+#                                           Solo il proprietario del Raffosberry può usare questo bot!
+#=============================================================================================================================================
+
+
+@bot.message_handler(func=lambda message: message.id!=CoseSegrete.owner_id)
+def cambiaMedia(message):
+
+    bot.send_message(message.chat.id, "Solo il proprietario del Raffosberry può usare questo bot!")
+    return
+
+def isAuthenticatedHandler(message):
+    #Da fare
+    return None
+
+
+#=============================================================================================================================================
+#                                                   Operazioni generiche e preliminari
+#=============================================================================================================================================
+
+
 @bot.message_handler(commands=['start'])
 def start(message):
     markup=types.ReplyKeyboardRemove()
