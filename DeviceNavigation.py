@@ -18,7 +18,7 @@ def getUsbDevices():
     displayOutputSring += "\n".join([str(x) + " - " + deviceInfoToString(i) for x , i in enumerate(usbDevices, 1)])
     displayOutputSring += "\nN.B. Partizioni diverse di uno stesso disco sono considerate come dischi diversi"
     #displayOutputSring = "\n".join([str(x) + " - " + i for x , i in enumerate(usbDevices,1)])
-    print(displayOutputSring)
+    #print(displayOutputSring)
     return usbDevices,displayOutputSring
 
 def parseLsblkOutput(output):
@@ -59,13 +59,13 @@ def displayMedia():
     media = getMedia()
     displayOutputSring = "Media presenti:\n"
     displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(media,1)])
-    print(displayOutputSring)
+    #print(displayOutputSring)
     return displayOutputSring, media
 
 def sceltaMedia(media,scelta):
     #scelta = input()
-    print(scelta)
-    print(scelta in media)
+    #print(scelta)
+    #print(scelta in media)
     
     if scelta == "Esplora":
         esplora()
@@ -80,7 +80,7 @@ def esplora():
     cartelle, file = list(os.walk(os.getcwd()))[0][1:]
     displayOutputSring = "Cartelle presenti:\n"
     displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(cartelle,1)])
-    print(displayOutputSring)
+    #print(displayOutputSring)
     return displayOutputSring, cartelle
 
 def isMountpoint(path):
