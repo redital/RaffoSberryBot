@@ -36,7 +36,10 @@ def isOwnerHandler(message):
 
 def isAuthenticated(message):
     now =  message.date
+    print(type(now))
     delta = now - lastActivity
+    print(type(delta))
+    print(type(inactivityTime))
     if delta > inactivityTime:
         global autenticato
         autenticato = False
