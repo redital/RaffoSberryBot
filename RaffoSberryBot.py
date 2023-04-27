@@ -49,6 +49,7 @@ def autenticazione(message):
     if message.text == CoseSegrete.Password:
         global autenticato
         autenticato = True
+        bot.send_message(message.chat.id, "Benvenuto!")
         bot.delete_message(message.chat.id,message.id)
     else:
         bot.send_message(message.chat.id, "Password errata!")
