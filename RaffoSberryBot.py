@@ -5,6 +5,7 @@ import DeviceNavigation
 import VLCHandler
 import os
 from time import sleep
+from datetime import timedelta, datetime
 from vlc import State
 
 API_TOKEN = CoseSegrete.TOKEN
@@ -15,20 +16,50 @@ DeviceNavigation.init()
 
 mode = "Hub"
 
+lastActivity = 0
+
+autenticato = False
+
+inactivityTime = timedelta(hours = 0, seconds = 10)
+
 #=============================================================================================================================================
 #                                           Solo il proprietario del Raffosberry può usare questo bot!
 #=============================================================================================================================================
 
 
 @bot.message_handler(func=lambda message: message.chat.id!=CoseSegrete.owner_id)
-def cambiaMedia(message):
+def isOwnerHandler(message):
     bot.send_message(message.chat.id, "Solo il proprietario del Raffosberry può usare questo bot!")
     return
 
-def isAuthenticatedHandler(message):
-    #Da fare
-    return None
+def isAuthenticated(message):
+    now =  message.date
+    delta = now - lastActivity
+    if delta > inactivityTime:
+        global autenticato
+        autenticato = False
+    return autenticato
+    
+def autenticazione(message):
+    if message.text == CoseSegrete.Password:
+        global autenticato
+        autenticato = True
+        bot.delete_message(message.chat.id,message.id)
+    else:
+        bot.send_message(message.chat.id, "Password errata!")
+        bot.delete_message(message.chat.id,message.id)
+        isAuthenticatedHandler(message)
 
+@bot.message_handler(func=lambda message: not isAuthenticated(message))
+def isAuthenticatedHandler(message):
+    msg = bot.send_message(message.chat.id, "Devi autenticarti!\nInserisci la tua password")
+    bot.register_next_step_handler(msg, autenticazione)
+
+@bot.middleware_handler(update_types=['message'])
+def modify_message(bot_instance, message):
+    global lastActivity
+    lastActivity = message.date
+    
 
 #=============================================================================================================================================
 #                                                   Operazioni generiche e preliminari
@@ -497,7 +528,7 @@ def stop(message):
         reply_markup=telecomando()
         )
     
-@bot.message_handler(func=lambda message: isMediaMode() and message.text=="telecomando")
+@bot.message_handler(func=lambda message: isMediaMode() and str(message.text).lower()=="telecomando")
 def riprendiTelecomando(message):
 
     if VLCHandler.vlcplayer.get_media()==None:
