@@ -18,7 +18,7 @@ DeviceNavigation.init()
 
 mode = "Hub"
 
-lastActivity = 0
+lastActivity = datetime.datetime.now()
 
 autenticato = False
 
