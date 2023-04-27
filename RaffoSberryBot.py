@@ -1,5 +1,6 @@
 import telebot
 from telebot import types
+from telebot import apihelper
 import CoseSegrete
 import DeviceNavigation
 import VLCHandler
@@ -11,6 +12,7 @@ from vlc import State
 API_TOKEN = CoseSegrete.TOKEN
 
 bot = telebot.TeleBot(API_TOKEN)
+apihelper.ENABLE_MIDDLEWARE = True
 
 DeviceNavigation.init()
 
@@ -59,7 +61,7 @@ def isAuthenticatedHandler(message):
 def modify_message(bot_instance, message):
     global lastActivity
     lastActivity = message.date
-    
+
 
 #=============================================================================================================================================
 #                                                   Operazioni generiche e preliminari
