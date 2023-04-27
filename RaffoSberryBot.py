@@ -39,6 +39,7 @@ def isAuthenticated(message):
     print(type(now))
     delta = now - lastActivity
     print(type(delta))
+    print((delta))
     print(type(inactivityTime))
     if delta > inactivityTime:
         global autenticato
