@@ -11,8 +11,8 @@ from vlc import State
 
 API_TOKEN = CoseSegrete.TOKEN
 
-bot = telebot.TeleBot(API_TOKEN)
 apihelper.ENABLE_MIDDLEWARE = True
+bot = telebot.TeleBot(API_TOKEN)
 
 DeviceNavigation.init()
 
