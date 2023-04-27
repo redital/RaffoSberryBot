@@ -35,7 +35,7 @@ def isOwnerHandler(message):
     return
 
 def isAuthenticated(message):
-    now =  message.date
+    now =  datetime.fromtimestamp(message.date)
     print(type(now))
     delta = now - lastActivity
     print(type(delta))
