@@ -439,7 +439,7 @@ def stop(message):
         reply_markup=telecomando()
         )
     
-@bot.message_handler(func=lambda message: isMediaMode() and (message.text=="+10" or message.text=="-10"))
+@bot.message_handler(func=lambda message: isMediaMode() and ((message.text[0]=="+" and str(message.text[1:]).isnumeric()) or (message.text[0]=="-" and str(message.text[1:]).isnumeric())))
 def skip(message):
 
     if not isMediaModeHandler(message):
