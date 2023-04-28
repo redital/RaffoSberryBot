@@ -52,6 +52,8 @@ def autenticazione(message):
     if message.text == CoseSegrete.Password:
         global autenticato
         autenticato = True
+        global lastActivity
+        lastActivity = datetime.fromtimestamp(message.date)
         bot.send_message(message.chat.id, "Benvenuto!")
         bot.delete_message(message.chat.id,message.id)
     else:
@@ -65,7 +67,7 @@ def isAuthenticatedHandler(message):
     bot.register_next_step_handler(msg, autenticazione)
 
 @bot.middleware_handler(update_types=['message'])
-def modify_message(bot_instance, message):
+def updateLastActivity(bot_instance, message):
     if isAuthenticated(message):
         global lastActivity
         lastActivity = datetime.fromtimestamp(message.date)
