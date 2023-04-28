@@ -36,12 +36,7 @@ def isOwnerHandler(message):
 
 def isAuthenticated(message):
     now =  datetime.fromtimestamp(message.date)
-    print(type(now))
     delta = now - lastActivity
-    print(type(delta))
-    print((delta))
-    print(type(inactivityTime))
-    print((inactivityTime))
     if delta > inactivityTime :
         global autenticato
         autenticato = False
@@ -121,6 +116,24 @@ Interrompere la riproduzione
 In ogni momento anche durante la riproduzione si può riprendere la navigazione del file system ricominciando da /selezionaDispositivo, per ritrovare il telecomando basterà scrivere telecomando in qualsiasi momento.
 
 Buona visione!
+    """
+
+    bot.send_message(message.chat.id, messaggiHelp[mode], reply_markup=markup)
+
+@bot.message_handler(commands=['lista'])
+def listaComandi(message):
+    markup=types.ReplyKeyboardRemove()
+
+    messaggiHelp = {}
+    messaggiHelp["Hub"] = """\
+Sei nell'hub, i comandi che puoi usare sono:
+/media  Entra in modalità media
+    """
+    messaggiHelp["Media"] = """\
+Sei in modalità media, i comandi che puoi usare sono:
+/hub                    Torna all'hub
+/dispositivi            Mostra la lista dei dispositivi di archiviazione esterna collegati
+/selezionaDispositivo   Permette di scegliere da quale periferica si vuole leggere i file multimediali
     """
 
     bot.send_message(message.chat.id, messaggiHelp[mode], reply_markup=markup)
@@ -235,6 +248,11 @@ def selezionaDispositivi(message):
         bot.register_next_step_handler(msg, getDeviceSelection)
     
 def getDeviceSelection(message):
+    
+    if not isAuthenticated(message):
+        isAuthenticatedHandler(message)
+        return
+    
     selection = -1
     devices = DeviceNavigation.getUsbDevices()[0]
     for i in range(len(devices)):
@@ -247,6 +265,11 @@ def getDeviceSelection(message):
         dispositivi(message)
     
 def inCartella(message):
+    
+    if not isAuthenticated(message):
+        isAuthenticatedHandler(message)
+        return
+    
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     mediaText, mediaList = DeviceNavigation.displayMedia()
     markup.add("Esplora","Torna")
@@ -269,6 +292,11 @@ def inCartella(message):
         bot.register_next_step_handler(msg, sceltaMedia)
 
 def esplora(message):
+    
+    if not isAuthenticated(message):
+        isAuthenticatedHandler(message)
+        return
+    
     markup=types.ReplyKeyboardRemove()
     if message.text == "Esplora" :
         cartelleText, cartelleList = DeviceNavigation.esplora()
@@ -296,6 +324,11 @@ def esplora(message):
         annulla(message)
         
 def sceltaMedia(message):
+    
+    if not isAuthenticated(message):
+        isAuthenticatedHandler(message)
+        return
+    
     if message.text == "Esplora":
         esplora(message)
         return
@@ -313,6 +346,11 @@ def sceltaMedia(message):
             )
     
 def sceltaCartella (message):
+    
+    if not isAuthenticated(message):
+        isAuthenticatedHandler(message)
+        return
+    
     if message.text == "telecomando" and isMediaMode():
         riprendiTelecomando(message)
         return
@@ -333,6 +371,11 @@ def sceltaCartella (message):
     inCartella(message)
     
 def goBack(message):
+    
+    if not isAuthenticated(message):
+        isAuthenticatedHandler(message)
+        return
+    
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
 
     mediaText, mediaList = DeviceNavigation.displayMedia()
@@ -356,6 +399,11 @@ def goBack(message):
         bot.register_next_step_handler(msg, sceltaMedia)
 
 def torna(message):
+    
+    if not isAuthenticated(message):
+        isAuthenticatedHandler(message)
+        return
+    
     markup=types.ReplyKeyboardRemove()
 
     if DeviceNavigation.isMountpoint(os.getcwd()):
@@ -384,6 +432,11 @@ def torna(message):
         annulla(message)
         
 def annulla(message):
+    
+    if not isAuthenticated(message):
+        isAuthenticatedHandler(message)
+        return
+    
     markup=types.ReplyKeyboardRemove()
     DeviceNavigation.backHome()
     if message.text == "telecomando" and isMediaMode():
