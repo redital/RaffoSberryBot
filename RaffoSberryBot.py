@@ -34,6 +34,17 @@ def isOwnerHandler(message):
     bot.send_message(message.chat.id, "Solo il proprietario del Raffosberry può usare questo bot!")
     return
 
+def reset(message):
+    if mode=="Media":
+        DeviceNavigation.backHome()
+        VLCHandler.stop()
+    hub()
+    
+    markup=types.ReplyKeyboardRemove()
+
+    msg = bot.send_message(message.chat.id,"reset", reply_markup=markup)
+    bot.delete_message(msg.chat.id,msg.id)
+
 def isAuthenticated(message):
     now =  datetime.fromtimestamp(message.date)
     print(type(now))
@@ -46,6 +57,7 @@ def isAuthenticated(message):
     if delta > inactivityTime :
         global autenticato
         autenticato = False
+        reset(message)
     return autenticato
     
 def autenticazione(message):
@@ -82,6 +94,7 @@ def updateLastActivity(bot_instance, message):
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    reset(message)
     markup=types.ReplyKeyboardRemove()
 
     bot.send_message( 
