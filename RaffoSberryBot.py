@@ -38,7 +38,7 @@ def reset(message):
     if mode=="Media":
         DeviceNavigation.backHome()
         VLCHandler.stop()
-    hub(message)
+    mode = "Hub"
     
     markup=types.ReplyKeyboardRemove()
 
@@ -151,13 +151,13 @@ def listaComandi(message):
     messaggiHelp = {}
     messaggiHelp["Hub"] = """\
 Sei nell'hub, i comandi che puoi usare sono:
-/media  Entra in modalità media
+/media - Entra in modalità media
     """
     messaggiHelp["Media"] = """\
 Sei in modalità media, i comandi che puoi usare sono:
-/hub                    Torna all'hub
-/dispositivi            Mostra la lista dei dispositivi di archiviazione esterna collegati
-/selezionaDispositivo   Permette di scegliere da quale periferica si vuole leggere i file multimediali
+/hub - Torna all'hub
+/dispositivi - Mostra la lista dei dispositivi di archiviazione esterna collegati
+/selezionaDispositivo - Permette di scegliere da quale periferica si vuole leggere i file multimediali
     """
 
     bot.send_message(message.chat.id, messaggiHelp[mode], reply_markup=markup)
