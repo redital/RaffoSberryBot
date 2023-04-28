@@ -38,6 +38,8 @@ def reset(message):
     if mode=="Media":
         DeviceNavigation.backHome()
         VLCHandler.stop()
+        
+    global mode
     mode = "Hub"
     
     markup=types.ReplyKeyboardRemove()
