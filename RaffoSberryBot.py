@@ -22,7 +22,7 @@ lastActivity = datetime.now()
 
 autenticato = False
 
-inactivityTime = timedelta(hours = 0, seconds = 10)
+inactivityTime = timedelta(hours = 1, seconds = 0)
 
 #=============================================================================================================================================
 #                                           Solo il proprietario del Raffosberry può usare questo bot!
