@@ -5,7 +5,7 @@
  Attualmente si è completato lo sviluppo della prima modalità: Media che permette di eseguire file multimediali da dispositivi di archiviazione esterna
 
 Migliorie da fare:
-- Aggiungere controllo Password
+- Aggiungere chiusura eventuali player ulteriori aperti in reset
 - Refactoring
 
 ## Prossime idee: 
