@@ -35,11 +35,11 @@ def isOwnerHandler(message):
     return
 
 def reset(message):
+    global mode
     if mode=="Media":
         DeviceNavigation.backHome()
         VLCHandler.stop()
         
-    global mode
     mode = "Hub"
     
     markup=types.ReplyKeyboardRemove()
