@@ -65,8 +65,9 @@ def isAuthenticatedHandler(message):
 
 @bot.middleware_handler(update_types=['message'])
 def modify_message(bot_instance, message):
-    global lastActivity
-    lastActivity = datetime.fromtimestamp(message.date)
+    if not autenticato:
+        global lastActivity
+        lastActivity = datetime.fromtimestamp(message.date)
 
 
 #=============================================================================================================================================
