@@ -42,6 +42,7 @@ def isAuthenticated(message):
     print((delta))
     print(type(inactivityTime))
     print((inactivityTime))
+    print()
     if delta > inactivityTime :
         global autenticato
         autenticato = False
@@ -69,6 +70,7 @@ def modify_message(bot_instance, message):
         global lastActivity
         lastActivity = datetime.fromtimestamp(message.date)
         print("Aggiornato " + str(lastActivity))
+        print()
 
 
 #=============================================================================================================================================
