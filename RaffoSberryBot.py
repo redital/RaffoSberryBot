@@ -38,7 +38,7 @@ def reset(message):
     if mode=="Media":
         DeviceNavigation.backHome()
         VLCHandler.stop()
-    hub()
+    hub(message)
     
     markup=types.ReplyKeyboardRemove()
 
@@ -75,7 +75,8 @@ def autenticazione(message):
 
 @bot.message_handler(func=lambda message: not isAuthenticated(message))
 def isAuthenticatedHandler(message):
-    msg = bot.send_message(message.chat.id, "Devi autenticarti!\nInserisci la tua password")
+    markup=types.ReplyKeyboardRemove()
+    msg = bot.send_message(message.chat.id, "Devi autenticarti!\nInserisci la tua password", reply_markup=markup)
     bot.register_next_step_handler(msg, autenticazione)
 
 @bot.middleware_handler(update_types=['message'])
