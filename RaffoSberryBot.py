@@ -63,6 +63,7 @@ def modify_message(bot_instance, message):
     if not autenticato:
         global lastActivity
         lastActivity = datetime.fromtimestamp(message.date)
+        print("Aggiornato " + str(lastActivity))
 
 
 #=============================================================================================================================================
