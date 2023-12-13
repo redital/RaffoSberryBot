@@ -49,13 +49,7 @@ def reset(message):
 
 def isAuthenticated(message):
     now =  datetime.fromtimestamp(message.date)
-    print(type(now))
     delta = now - lastActivity
-    print(type(delta))
-    print((delta))
-    print(type(inactivityTime))
-    print((inactivityTime))
-    print()
     if delta > inactivityTime :
         global autenticato
         autenticato = False
