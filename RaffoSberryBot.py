@@ -4,10 +4,12 @@ from telebot import apihelper
 import CoseSegrete
 import DeviceNavigation
 import VLCHandler
+import CecClientInterface
 import os
 from time import sleep
 from datetime import timedelta, datetime
 from vlc import State
+from collections import defaultdict
 
 API_TOKEN = CoseSegrete.TOKEN
 
@@ -171,13 +173,21 @@ def hub(message):
             reply_markup=markup
             )
     else:
+        exitModeMethods[mode]()
         mode = "Hub"
         bot.send_message(
             message.chat.id,
             "Adesso sei nell'hub.\nSe non sai cosa fare qui usa l'help!", 
             reply_markup=markup
             )
-        DeviceNavigation.backHome()
+
+def defaultExit() : pass
+exitModeMethods = defaultdict(lambda: defaultExit)
+def exitMedia():
+    DeviceNavigation.backHome()
+    CecClientInterface.dispositivo(0).power_off()
+exitModeMethods["Media"] = exitMedia
+
     
 @bot.message_handler(commands=['media'])
 def media(message):
@@ -199,6 +209,9 @@ def media(message):
     else:
         mode="Media"
         VLCHandler.setUp()
+        tv = CecClientInterface.dispositivo(0)
+        tv.power_on()
+        tv.go_on_pi()
         bot.send_message(
             message.chat.id,
             "Adesso sei in modalità media.\nSe non sai cosa fare qui usa l'help!", 
