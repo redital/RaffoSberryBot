@@ -12,3 +12,7 @@ Migliorie da fare:
 - Introdurre un'attività di scraping di canali telegram per scaricare media in automatico dai canali
 - Introdurre una modalità di lettura dei log (incluso monitoraggio temperatura)
 - Introdurre un tasto nell'hub per il reboot del raspberry
+
+
+N.B. il file di requirements è stato creato usando il comando pipreqs --ignore bin,etc,include,lib,lib64,.venv
+Installare i requirements usando pip install -r requirements.txt
