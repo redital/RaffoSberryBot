@@ -22,7 +22,7 @@ class dispositivo:
         "refresh connection" : "r",
     })
 
-    execute = lambda self,command: subprocess.run(str(self.commands[command]).format(id=self.device_id))
+    execute = lambda self,command: subprocess.run("echo '{0}' | cec-client -s -d 1".format(str(self.commands[command]).format(id=self.device_id)))
 
     power_on  = lambda self: self.execute("power on")
     power_off = lambda self: self.execute("power off")
