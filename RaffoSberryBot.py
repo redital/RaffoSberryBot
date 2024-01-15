@@ -670,5 +670,9 @@ def echo_message(message):
     bot.reply_to(message, "Mi dispiace ma non conosco questo comando" , reply_markup=markup)
 
 
-#bot.polling()
-bot.polling(none_stop=True)
+try:
+    #bot.polling()
+    bot.polling(none_stop=True)
+except:
+    sleep(10)
+    bot.polling(none_stop=True)
