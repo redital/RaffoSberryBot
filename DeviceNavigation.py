@@ -13,7 +13,7 @@ def backHome():
 def getUsbDevices():
     output_stream = os.popen("lsblk")
     usbDevices = parseLsblkOutput(output_stream.readlines())
-    usbDevices = [device for device in usbDevices if len(device["MOUNTPOINT"])>0]
+    usbDevices = [device for device in usbDevices if len(device["MOUNTPOINTS"])>0]
     displayOutputSring = "Dispositivi collegati:\n"
     displayOutputSring += "\n".join([str(x) + " - " + deviceInfoToString(i) for x , i in enumerate(usbDevices, 1)])
     displayOutputSring += "\nN.B. Partizioni diverse di uno stesso disco sono considerate come dischi diversi"
