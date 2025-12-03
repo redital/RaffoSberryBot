@@ -11,10 +11,6 @@ def setUp():
     global vlcplayer
     vlcplayer = vlc_obj.media_player_new()
 
-    # Imposta il display in base alla variabile DISPLAY dell'ambiente
-    display = os.getenv("DISPLAY", ":0")  # Usa il valore di DISPLAY dell'ambiente, fallback su ":0"
-    vlcplayer.set_xwindow(display)  # Imposta il window ID per il rendering grafico
-
 def clear():
     global vlc_obj
     vlc_obj = None
