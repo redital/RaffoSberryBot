@@ -27,8 +27,6 @@ def parseLsblkOutput(output):
     for i in range(1,len(output)):
         deviceInfo = {}
         elementi = [x for x in output[i].split(" ") if len(x)>0]
-        print("keys:\n",keys)
-        print("elementi:\n",elementi)
         for j in range(len(keys)):
             try:
                 deviceInfo[keys[j]] = elementi[j].replace("\n","")
@@ -38,7 +36,6 @@ def parseLsblkOutput(output):
             deviceInfo["NAME"] = deviceInfo.get("NAME","")[2:]
         if "mmcblk0" not in deviceInfo.get("NAME",""):
             usbDevices.append(deviceInfo)
-        print(usbDevices)
     return usbDevices
 
 def deviceInfoToString(deviceInfo):
@@ -75,7 +72,6 @@ def sceltaMedia(media,scelta):
     if scelta == "Esplora":
         esplora()
     elif scelta in media or scelta in [x.split(".")[0] for x in media]:
-        print("Riproduco", scelta)
         VLCHandler.setMedia(scelta)
     else:
         print("Errore")

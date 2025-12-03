@@ -20,3 +20,5 @@ services:
     devices:
       - /dev/snd:/dev/snd  # Esponi i dispositivi audio
     network_mode: "host"  # Usa la rete dell'host per il forwarding X11 e audio/video
+    stdin_open: true
+    tty: true
