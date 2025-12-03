@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 from telebot import apihelper
-import CoseSegrete
+import config
 import DeviceNavigation
 import VLCHandler
 import CecClientInterface
@@ -11,7 +11,7 @@ from datetime import timedelta, datetime
 from vlc import State
 from collections import defaultdict
 
-API_TOKEN = CoseSegrete.TOKEN
+API_TOKEN = config.TOKEN
 
 apihelper.ENABLE_MIDDLEWARE = True
 bot = telebot.TeleBot(API_TOKEN)
@@ -31,7 +31,7 @@ inactivityTime = timedelta(hours = 1, seconds = 0)
 #=============================================================================================================================================
 
 
-@bot.message_handler(func=lambda message: message.chat.id!=CoseSegrete.owner_id)
+@bot.message_handler(func=lambda message: message.chat.id!=config.owner_id)
 def isOwnerHandler(message):
     bot.send_message(message.chat.id, "Solo il proprietario del Raffosberry può usare questo bot!")
     return
@@ -59,7 +59,7 @@ def isAuthenticated(message):
     return autenticato
     
 def autenticazione(message):
-    if message.text == CoseSegrete.Password:
+    if message.text == config.Password:
         global autenticato
         autenticato = True
         global lastActivity
