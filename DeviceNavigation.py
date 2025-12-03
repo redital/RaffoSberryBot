@@ -22,7 +22,7 @@ def getUsbDevices():
     return usbDevices,displayOutputSring
 
 def parseLsblkOutput(output):
-    usbDevices = []
+    usbDevices = [{'NAME': 'omv', 'MAJ:MIN': '8:0', 'RM': '0', 'SIZE': '300.8G', 'RO': '0', 'TYPE': 'shared_folder', 'MOUNTPOINTS': '/app/Downloads'}]
     keys = [x.replace("\n","") for x in output[0].split(" ") if len(x)>0]
     for i in range(1,len(output)):
         deviceInfo = {}
@@ -30,7 +30,10 @@ def parseLsblkOutput(output):
         print("keys:\n",keys)
         print("elementi:\n",elementi)
         for j in range(len(keys)):
-            deviceInfo[keys[j]] = elementi[j].replace("\n","")
+            try:
+                deviceInfo[keys[j]] = elementi[j].replace("\n","")
+            except IndexError:
+                continue
         if deviceInfo["TYPE"] == "part":
             deviceInfo["NAME"] = deviceInfo["NAME"][2:]
         if "mmcblk0" not in deviceInfo["NAME"]:
