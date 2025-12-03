@@ -27,6 +27,7 @@ def parseLsblkOutput(output):
     for i in range(1,len(output)):
         deviceInfo = {}
         elementi = [x for x in output[i].split(" ") if len(x)>0]
+        print(elementi)
         for j in range(len(keys)):
             deviceInfo[keys[j]] = elementi[j].replace("\n","")
         if deviceInfo["TYPE"] == "part":
