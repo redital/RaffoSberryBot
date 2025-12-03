@@ -27,15 +27,15 @@ def parseLsblkOutput(output):
     for i in range(1,len(output)):
         deviceInfo = {}
         elementi = [x for x in output[i].split(" ") if len(x)>0]
-        print(keys)
-        print(elementi)
+        print("keys:\n",keys)
+        print("elementi:\n",elementi)
         for j in range(len(keys)):
             deviceInfo[keys[j]] = elementi[j].replace("\n","")
         if deviceInfo["TYPE"] == "part":
             deviceInfo["NAME"] = deviceInfo["NAME"][2:]
         if "mmcblk0" not in deviceInfo["NAME"]:
             usbDevices.append(deviceInfo)
-    
+        print(usbDevices)
     return usbDevices
 
 def deviceInfoToString(deviceInfo):
