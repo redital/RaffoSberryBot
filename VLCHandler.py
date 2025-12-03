@@ -7,7 +7,7 @@ vlcplayer = None
 
 def setUp():
     global vlc_obj
-    vlc_obj = vlc.Instance('--no-xlib')  # Aggiungi questa opzione per evitare conflitti con X11 in un container
+    vlc_obj = vlc.Instance('--no-xlib', '--verbose=2')  # Aggiungi questa opzione per evitare conflitti con X11 in un container
     global vlcplayer
     vlcplayer = vlc_obj.media_player_new()
 
