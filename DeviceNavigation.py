@@ -35,7 +35,7 @@ def parseLsblkOutput(output):
             except IndexError:
                 continue
         if deviceInfo.get("TYPE","") == "part":
-            deviceInfo.get["NAME"] = deviceInfo.get("NAME","")[2:]
+            deviceInfo["NAME"] = deviceInfo.get("NAME","")[2:]
         if "mmcblk0" not in deviceInfo.get("NAME",""):
             usbDevices.append(deviceInfo)
         print(usbDevices)
