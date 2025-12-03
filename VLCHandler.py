@@ -1,15 +1,20 @@
 import vlc
 from time import sleep
+import os
 
 vlc_obj = None
 vlcplayer = None
 
 def setUp():
     global vlc_obj
-    vlc_obj= vlc.Instance()
+    vlc_obj = vlc.Instance('--no-xlib')  # Aggiungi questa opzione per evitare conflitti con X11 in un container
     global vlcplayer
     vlcplayer = vlc_obj.media_player_new()
-    
+
+    # Imposta il display in base alla variabile DISPLAY dell'ambiente
+    display = os.getenv("DISPLAY", ":0")  # Usa il valore di DISPLAY dell'ambiente, fallback su ":0"
+    vlcplayer.set_xwindow(display)  # Imposta il window ID per il rendering grafico
+
 def clear():
     global vlc_obj
     vlc_obj = None

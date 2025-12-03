@@ -9,8 +9,17 @@ services:
       - OWNER_ID=${OWNER_ID:-123456789}
 
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-placeholder}
+      
+      - DISPLAY=${DISPLAY}  # Variabile per il forwarding X11
     restart: unless-stopped
     build: .
     pull_policy: build
     volumes:
-      - ${MEDIA_DIRECTORY}:/app/Downloads
+      - ${MEDIA_DIRECTORY}:/app/Downloads  # Monta la directory dei media
+      - /tmp/.X11-unix:/tmp/.X11-unix  # Monta la directory X11 per il forwarding
+    devices:
+      - /dev/snd:/dev/snd  # Esponi i dispositivi audio
+      - /dev/video0:/dev/video0  # Se necessario, esponi i dispositivi video
+    network_mode: "host"  # Usa la rete dell'host per il forwarding X11 e audio/video
+    stdin_open: true  # Permetti input interattivo (se richiesto)
+    tty: true  # Abilita la modalità terminale
