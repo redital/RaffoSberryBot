@@ -9,8 +9,6 @@ services:
       - OWNER_ID=${OWNER_ID:-123456789}
 
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-placeholder}
-    ports:
-      - "8222:${FLASK_PORT}"
     restart: unless-stopped
     build: .
     pull_policy: build
