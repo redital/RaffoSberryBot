@@ -75,6 +75,7 @@ def sceltaMedia(media,scelta):
     if scelta == "Esplora":
         esplora()
     elif scelta in media or scelta in [x.split(".")[0] for x in media]:
+        print("Riproduco", scelta)
         VLCHandler.setMedia(scelta)
     else:
         print("Errore")
