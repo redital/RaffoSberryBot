@@ -34,19 +34,19 @@ def parseLsblkOutput(output):
                 deviceInfo[keys[j]] = elementi[j].replace("\n","")
             except IndexError:
                 continue
-        if deviceInfo["TYPE"] == "part":
-            deviceInfo["NAME"] = deviceInfo["NAME"][2:]
-        if "mmcblk0" not in deviceInfo["NAME"]:
+        if deviceInfo.get("TYPE","") == "part":
+            deviceInfo.get("NAME","") = deviceInfo.get("NAME","")[2:]
+        if "mmcblk0" not in deviceInfo.get("NAME",""):
             usbDevices.append(deviceInfo)
         print(usbDevices)
     return usbDevices
 
 def deviceInfoToString(deviceInfo):
-    return deviceInfo["NAME"] + " con uno spazio totale di memoria di " + deviceInfo["SIZE"]
+    return deviceInfo.get("NAME","") + " con uno spazio totale di memoria di " + deviceInfo.get("SIZE","")
 
 def deviceSelection(usbDevices,selection):
     deviceInfo = usbDevices[selection]
-    os.chdir(deviceInfo["MOUNTPOINT"])
+    os.chdir(deviceInfo.get("MOUNTPOINT",""))
     return displayMedia()
     print("Digita il nome del file che vuoi riprodurre, o forse vuoi esplorare le altre cartelle?")
     sceltaMedia(media)
