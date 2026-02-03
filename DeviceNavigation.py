@@ -51,6 +51,7 @@ def deviceSelection(usbDevices,selection):
 def getMedia():
     cartelle, file = list(os.walk(os.getcwd()))[0][1:]
     media = [x for x in file if isMedia(x)]
+    media.sort()
     return media
 
 def isMedia(file):
@@ -58,7 +59,7 @@ def isMedia(file):
     return file.split(".")[-1] in permessi
 
 def displayMedia():
-    media = getMedia().sort()
+    media = getMedia()
     displayOutputSring = "Media presenti:\n"
     displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(media,1)])
     #print(displayOutputSring)
@@ -80,7 +81,7 @@ def sceltaMedia(media,scelta):
 
 def esplora():
     cartelle, file = list(os.walk(os.getcwd()))[0][1:]
-    cartelle = cartelle.sort()
+    cartelle.sort()
     displayOutputSring = "Cartelle presenti:\n"
     displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(cartelle,1)])
     #print(displayOutputSring)
