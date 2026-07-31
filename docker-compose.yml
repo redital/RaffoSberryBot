@@ -15,10 +15,13 @@ services:
     build: .
     pull_policy: build
     volumes:
-      - ${MEDIA_DIRECTORY}:/app/Downloads  # Monta la directory dei media
-      - /tmp/.X11-unix:/tmp/.X11-unix  # Monta la directory X11 per il forwarding
+      - ${MEDIA_DIRECTORY}:/app/Downloads
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/root/.Xauthority:ro  # Passa i cookie di autenticazione X11
     devices:
-      - /dev/snd:/dev/snd  # Esponi i dispositivi audio
-    network_mode: "host"  # Usa la rete dell'host per il forwarding X11 e audio/video
+      - /dev/snd:/dev/snd
+      - /dev/dri:/dev/dri 
+    network_mode: "host"
+    ipc: "host" 
     stdin_open: true
     tty: true
