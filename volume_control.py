@@ -1,17 +1,18 @@
 import alsaaudio
 from logger import get_logger
+from config import MIXER
 
 logger = get_logger(__name__)
 
 def _get_mixer():
-    """Funzione interna di utilità per agganciare il canale Master."""
+    """Funzione interna di utilità per agganciare il canale scelto."""
     try:
-        return alsaaudio.Mixer('Master')
+        return alsaaudio.Mixer(MIXER)
     except alsaaudio.ALSAAudioError:
-        # Se il canale 'Master' non esiste, prova a usare il primo disponibile
+        # Se il canale scelto non esiste, prova a usare il primo disponibile
         mixers = alsaaudio.mixers()
         if mixers:
-            logger.warning("Mixer 'Master' non trovato, uso '%s' al suo posto", mixers[0])
+            logger.warning("Mixer '%s' non trovato, uso '%s' al suo posto", MIXER, mixers[0])
             return alsaaudio.Mixer(mixers[0])
         logger.error("Nessun mixer ALSA trovato sul sistema")
         raise RuntimeError("Nessun mixer ALSA trovato sul sistema.")

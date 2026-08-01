@@ -5,6 +5,7 @@ TOKEN = os.environ.get("API_TOKEN", "placeholder")
 owner_id = int(os.environ.get("OWNER_ID", "0"))
 Password = os.environ.get("ADMIN_PASSWORD", "placeholder")
 vlc_verbose = os.environ.get("VLC_VERBOSE", "0")
+MIXER = os.environ.get("MIXER", "PCM")
 
 #================= LOGGER =====================
 LOG_DIR = os.environ.get("LOG_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs"))

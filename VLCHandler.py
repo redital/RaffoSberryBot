@@ -11,7 +11,18 @@ vlcplayer = None
 
 def setUp():
     global vlc_obj
-    vlc_obj = vlc.Instance('--no-xlib', '--verbose={}'.format(config.vlc_verbose))
+    # Racchiudiamo tutti gli argomenti in una lista []
+    vlc_obj = vlc.Instance([
+        '--no-xlib', 
+        '--verbose={}'.format(config.vlc_verbose), 
+        '--avcodec-hw=none',
+        '--file-caching=2000',
+        '--live-caching=2000',
+    ])   
+    global vlcplayer
+    vlcplayer = vlc_obj.media_player_new()
+
+def clear():
     global vlc_obj
     vlc_obj = None
     global vlcplayer

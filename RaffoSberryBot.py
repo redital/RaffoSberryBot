@@ -590,7 +590,7 @@ def skip(message):
     if not isMediaModeHandler(message):
         return
 
-    delta = message.text.replace(" ", "")[1:-1]
+    delta = message.text.replace(" ", "")[:-1]
 
     VLCHandler.skip(int(delta))
     
