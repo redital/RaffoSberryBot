@@ -56,6 +56,9 @@ def reset(message):
     bot.delete_message(msg.chat.id,msg.id)
 
 def isAuthenticated(message):
+    if not config.AUTHENTICATION_ENABLED:
+        return True
+
     now =  datetime.fromtimestamp(message.date)
     delta = now - lastActivity
     if delta > inactivityTime :
@@ -71,11 +74,11 @@ def autenticazione(message):
         autenticato = True
         global lastActivity
         lastActivity = datetime.fromtimestamp(message.date)
-        logger.info("Autenticazione riuscita (chat_id %s)", message.chat.id)
+        logger.info("Autenticazione riuscita", message.chat.id)
         bot.send_message(message.chat.id, "Benvenuto!")
         bot.delete_message(message.chat.id,message.id)
     else:
-        logger.warning("Tentativo di autenticazione fallito (chat_id %s)", message.chat.id)
+        logger.warning("Tentativo di autenticazione fallito", message.chat.id)
         bot.send_message(message.chat.id, "Password errata!")
         bot.delete_message(message.chat.id,message.id)
         isAuthenticatedHandler(message)

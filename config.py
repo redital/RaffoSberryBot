@@ -4,6 +4,7 @@ import logging
 TOKEN = os.environ.get("API_TOKEN", "placeholder")
 owner_id = int(os.environ.get("OWNER_ID", "0"))
 Password = os.environ.get("ADMIN_PASSWORD", "placeholder")
+AUTHENTICATION_ENABLED = os.environ.get("AUTHENTICATION_ENABLED", "false").strip().lower() == "true"
 vlc_verbose = os.environ.get("VLC_VERBOSE", "0")
 MIXER = os.environ.get("MIXER", "PCM")
 
