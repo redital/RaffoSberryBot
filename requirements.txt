@@ -1,3 +1,4 @@
 pyTelegramBotAPI==4.14.0
 pyTelegramBotAPI==4.14.0
 python_vlc==3.0.20123
+pyalsaaudio==0.10.0

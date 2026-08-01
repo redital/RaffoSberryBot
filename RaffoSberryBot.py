@@ -5,6 +5,7 @@ import config
 import DeviceNavigation
 import VLCHandler
 import CecClientInterface
+import volume_control
 import os
 from time import sleep
 from datetime import timedelta, datetime
@@ -495,9 +496,9 @@ def telecomando():
         return telecomando.add("Play").add("Cambia media")
 
     if VLCHandler.getState() == State.Paused or VLCHandler.getState() == State.NothingSpecial:
-        telecomando.add("-10","Play","+10")
+        telecomando.add("-10 s","Play","+10 s")
     elif VLCHandler.getState() == State.Playing:
-        telecomando.add("-10","Pause","+10")
+        telecomando.add("-10 s","Pause","+10 s")
 
     elemento1 = ""
     if not VLCHandler.isMute():
@@ -512,6 +513,12 @@ def telecomando():
         elemento2 = "Schermo intero"
 
     telecomando.add(elemento1,elemento2)
+
+    telecomando.add(
+        types.InlineKeyboardButton(text="-10", callback_data="-10"),
+        types.InlineKeyboardButton(text=str(volume_control.get_volume()), callback_data="ignore"),
+        types.InlineKeyboardButton(text="+10", callback_data="+10")
+    )
 
     telecomando.add("Quanto manca?")
 
@@ -565,22 +572,24 @@ def stop(message):
         reply_markup=telecomando()
         )
     
-@bot.message_handler(func=lambda message: isMediaMode() and ((message.text[0]=="+" and str(message.text[1:]).isnumeric()) or (message.text[0]=="-" and str(message.text[1:]).isnumeric())))
+@bot.message_handler(func=lambda message: isMediaMode() and (message.text[0] in ('+', '-') and message.text.replace(" ", "")[1:-1].isnumeric() and message.text[-1]=="s"))
 def skip(message):
 
     if not isMediaModeHandler(message):
         return
 
-    VLCHandler.skip(int(message.text))
+    delta = message.text.replace(" ", "")[1:-1]
+
+    VLCHandler.skip(int(delta))
     
     bot.send_message(
         message.chat.id,
-        "Skip " + message.text + " secondi",
+        "Skip " + delta + " secondi",
         reply_markup=telecomando()
         )
     
 @bot.message_handler(func=lambda message: isMediaMode() and (message.text=="Finestra" or message.text=="Schermo intero"))
-def pause(message):
+def toggle_full_screen(message):
 
     if not isMediaModeHandler(message):
         return
@@ -596,7 +605,7 @@ def pause(message):
         )
     
 @bot.message_handler(func=lambda message: isMediaMode() and (message.text=="Muto" or message.text=="Riattiva volume"))
-def pause(message):
+def toggle_mute(message):
 
     if not isMediaModeHandler(message):
         return
@@ -622,6 +631,23 @@ def stop(message):
         VLCHandler.quantoManca(),
         reply_markup=telecomando()
         )
+    
+@bot.message_handler(func=lambda message: isMediaMode() and ((message.text[0]=="+" and str(message.text[1:]).isnumeric()) or (message.text[0]=="-" and str(message.text[1:]).isnumeric())))
+def modifica_volume(message):
+
+    if not isMediaModeHandler(message):
+        return
+    
+    volume_control.modifica_volume(int(message.text.rstrip()[:-1].rstrip()))
+
+    sleep(0.5)
+    
+    bot.send_message(
+        message.chat.id,
+        "Volume:" + str(volume_control.get_volume()),
+        reply_markup=telecomando()
+        )
+
     
 @bot.message_handler(func=lambda message: isMediaMode() and str(message.text).lower()=="telecomando")
 def riprendiTelecomando(message):

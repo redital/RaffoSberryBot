@@ -1,9 +1,9 @@
 # Immagine base
 FROM python:3.11
 
-# Installazione di VLC e altre dipendenze (se non già incluse nel tuo codice)
+# Installazione di VLC e altre dipendenze
 RUN apt-get update && \
-    apt-get install -y vlc x11-apps alsa-utils pulseaudio cec-utils && \
+    apt-get install -y vlc x11-apps alsa-utils pulseaudio cec-utils libasound2-dev gcc && \
     rm -rf /var/lib/apt/lists/*
 
 # Impostazioni di lavoro
