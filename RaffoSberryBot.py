@@ -712,10 +712,13 @@ def echo_message(message):
 
 
 logger.info("Avvio del bot RaffoSberry")
-try:
-    #bot.polling()
-    bot.polling(none_stop=True)
-except Exception:
-    logger.exception("Il polling è terminato con un errore, riprovo tra 10 secondi")
-    sleep(10)
-    bot.polling(none_stop=True)
+
+while True:
+    try:
+        print("Avvio del bot...")
+        bot.polling(none_stop=True, timeout=60, long_polling_timeout=60)
+    except Exception as e:
+        pausa = 10
+        logger.exception("Il polling è terminato con un errore, riprovo tra {} secondi".format(pausa))
+        sleep(pausa)
+        bot.polling(none_stop=True)
