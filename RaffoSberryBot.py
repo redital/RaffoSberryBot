@@ -7,10 +7,13 @@ import VLCHandler
 import CecClientInterface
 import volume_control
 import os
+from logger import get_logger
 from time import sleep
 from datetime import timedelta, datetime
 from vlc import State
 from collections import defaultdict
+
+logger = get_logger(__name__)
 
 API_TOKEN = config.TOKEN
 
@@ -34,11 +37,13 @@ inactivityTime = timedelta(hours = 1, seconds = 0)
 
 @bot.message_handler(func=lambda message: message.chat.id!=config.owner_id)
 def isOwnerHandler(message):
+    logger.warning("Accesso rifiutato: chat_id %s non è il proprietario", message.chat.id)
     bot.send_message(message.chat.id, "Solo il proprietario del Raffosberry può usare questo bot!")
     return
 
 def reset(message):
     global mode
+    logger.info("Reset richiesto (modalità corrente: %s)", mode)
     if mode=="Media":
         DeviceNavigation.backHome()
         VLCHandler.stop()
@@ -56,6 +61,7 @@ def isAuthenticated(message):
     if delta > inactivityTime :
         global autenticato
         autenticato = False
+        logger.info("Sessione scaduta per inattività (%s), logout automatico", delta)
         reset(message)
     return autenticato
     
@@ -65,9 +71,11 @@ def autenticazione(message):
         autenticato = True
         global lastActivity
         lastActivity = datetime.fromtimestamp(message.date)
+        logger.info("Autenticazione riuscita (chat_id %s)", message.chat.id)
         bot.send_message(message.chat.id, "Benvenuto!")
         bot.delete_message(message.chat.id,message.id)
     else:
+        logger.warning("Tentativo di autenticazione fallito (chat_id %s)", message.chat.id)
         bot.send_message(message.chat.id, "Password errata!")
         bot.delete_message(message.chat.id,message.id)
         isAuthenticatedHandler(message)
@@ -83,8 +91,7 @@ def updateLastActivity(bot_instance, message):
     if isAuthenticated(message):
         global lastActivity
         lastActivity = datetime.fromtimestamp(message.date)
-        print("Aggiornato " + str(lastActivity))
-        print()
+        logger.debug("Ultima attività aggiornata: %s", lastActivity)
 
 
 #=============================================================================================================================================
@@ -174,6 +181,7 @@ def hub(message):
             reply_markup=markup
             )
     else:
+        logger.info("Uscita dalla modalità %s verso Hub", mode)
         exitModeMethods[mode]()
         mode = "Hub"
         bot.send_message(
@@ -208,11 +216,13 @@ def media(message):
             reply_markup=markup
             )
     else:
+        logger.info("Ingresso in modalità Media")
         mode="Media"
         VLCHandler.setUp()
         tv = CecClientInterface.dispositivo(0)
         tv.power_on()
         tv.go_on_pi()
+        logger.debug("TV accesa e commutata sull'ingresso del Raspberry")
         bot.send_message(
             message.chat.id,
             "Adesso sei in modalità media.\nSe non sai cosa fare qui usa l'help!", 
@@ -292,6 +302,7 @@ def getDeviceSelection(message):
     for i in range(len(devices)):
         if message.text == devices[i]["NAME"]:
             selection = i
+            logger.info("Dispositivo selezionato: %s", devices[i]["NAME"])
             DeviceNavigation.deviceSelection(devices,selection)
             inCartella(message)
             return
@@ -396,7 +407,8 @@ def sceltaCartella (message):
         return
     try:
         os.chdir(os.path.join(os.getcwd(),message.text))
-    except:
+    except Exception:
+        logger.exception("Errore nel cambio cartella verso '%s' (cwd: %s)", message.text, os.getcwd())
         bot.send_message(
             message.chat.id,
             "Qualcosa è andato storto, forse hai sbaliato a digitare il nome della cartella?",
@@ -696,9 +708,11 @@ def echo_message(message):
     bot.reply_to(message, "Mi dispiace ma non conosco questo comando" , reply_markup=markup)
 
 
+logger.info("Avvio del bot RaffoSberry")
 try:
     #bot.polling()
     bot.polling(none_stop=True)
-except:
+except Exception:
+    logger.exception("Il polling è terminato con un errore, riprovo tra 10 secondi")
     sleep(10)
     bot.polling(none_stop=True)

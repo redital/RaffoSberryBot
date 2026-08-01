@@ -1,19 +1,25 @@
 import os
 import VLCHandler
+from logger import get_logger
+
+logger = get_logger(__name__)
 
 HOME = ""
 
 def init():
     global HOME
     HOME = os.getcwd()
+    logger.info("Cartella base (HOME) impostata a: %s", HOME)
 
 def backHome():
     os.chdir(HOME)
+    logger.debug("Tornato alla cartella base: %s", HOME)
 
 def getUsbDevices():
     output_stream = os.popen("lsblk")
     usbDevices = parseLsblkOutput(output_stream.readlines())
     usbDevices = [device for device in usbDevices if len(device.get("MOUNTPOINT",""))>0]
+    logger.info("Trovati %s dispositivi con mountpoint", len(usbDevices))
     displayOutputSring = "Dispositivi collegati:\n"
     displayOutputSring += "\n".join([str(x) + " - " + deviceInfoToString(i) for x , i in enumerate(usbDevices, 1)])
     displayOutputSring += "\nN.B. Partizioni diverse di uno stesso disco sono considerate come dischi diversi"
@@ -31,6 +37,10 @@ def parseLsblkOutput(output):
             try:
                 deviceInfo[keys[j]] = elementi[j].replace("\n","")
             except IndexError:
+                logger.debug(
+                    "Riga lsblk con meno colonne del previsto, salto il campo '%s': %s",
+                    keys[j], elementi
+                )
                 continue
         if deviceInfo.get("TYPE","") == "part":
             deviceInfo["NAME"] = deviceInfo.get("NAME","")[2:]
@@ -43,6 +53,7 @@ def deviceInfoToString(deviceInfo):
 
 def deviceSelection(usbDevices,selection):
     deviceInfo = usbDevices[selection]
+    logger.info("Dispositivo selezionato: %s (mountpoint: %s)", deviceInfo.get("NAME",""), deviceInfo.get("MOUNTPOINT",""))
     os.chdir(deviceInfo.get("MOUNTPOINT",""))
     return displayMedia()
     print("Digita il nome del file che vuoi riprodurre, o forse vuoi esplorare le altre cartelle?")
@@ -52,6 +63,7 @@ def getMedia():
     cartelle, file = list(os.walk(os.getcwd()))[0][1:]
     media = [x for x in file if isMedia(x)]
     media.sort()
+    logger.debug("Media trovati in %s: %s", os.getcwd(), media)
     return media
 
 def isMedia(file):
@@ -73,15 +85,17 @@ def sceltaMedia(media,scelta):
     if scelta == "Esplora":
         esplora()
     elif scelta in media or scelta in [x.split(".")[0] for x in media]:
+        logger.info("Media scelto: %s", scelta)
         VLCHandler.setMedia(scelta)
     else:
-        print("Errore")
+        logger.warning("Scelta media non valida: '%s' (opzioni disponibili: %s)", scelta, media)
         #print("Scusami ma non ho capito cosa vuoi riprodurre.\nRiprova")
         #sceltaMedia(media)
 
 def esplora():
     cartelle, file = list(os.walk(os.getcwd()))[0][1:]
     cartelle.sort()
+    logger.debug("Cartelle trovate in %s: %s", os.getcwd(), cartelle)
     displayOutputSring = "Cartelle presenti:\n"
     displayOutputSring += "\n".join([str(x) + " - " + i for x , i in enumerate(cartelle,1)])
     #print(displayOutputSring)

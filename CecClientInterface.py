@@ -1,4 +1,7 @@
 import subprocess
+from logger import get_logger
+
+logger = get_logger(__name__)
 
 class smart_dict(dict):
     def __missing__(self, key):
@@ -22,7 +25,19 @@ class dispositivo:
         "refresh connection" : "r",
     })
 
-    execute = lambda self,command: subprocess.run("echo '{0}' | cec-client -s -d 1".format(str(self.commands[command]).format(id=self.device_id)), shell=True)
+    def execute(self, command):
+        cec_command = str(self.commands[command]).format(id=self.device_id)
+        logger.debug("Invio comando CEC '%s' (device_id=%s) -> '%s'", command, self.device_id, cec_command)
+        result = subprocess.run(
+            "echo '{0}' | cec-client -s -d 1".format(cec_command),
+            shell=True
+        )
+        if result.returncode != 0:
+            logger.warning(
+                "Comando CEC '%s' terminato con codice di uscita %s",
+                command, result.returncode
+            )
+        return result
 
     power_on  = lambda self: self.execute("power on")
     power_off = lambda self: self.execute("power off")
